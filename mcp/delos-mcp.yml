@@ -1,0 +1,483 @@
+generated: '2026-08-12'
+method: derived
+status: candidate
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+searched:
+  result: none
+  note: No hosted or remote MCP server is published by Delos. Searched the delos.com and wellcube.io sites and
+    sitemaps, the Delos-tech GitHub organization (2 public repos, both JSON-RPC-over-MQTT forks), npm under the
+    verified Delos maintainer account, and probed /.well-known/* plus /mcp-style paths on delos.com, wellcube.io,
+    cloud.wellcube.io and app.wellcube.io. Nothing found. The tool list below is DERIVED from the public OpenAPI
+    and is a candidate proposal by API Evangelist, not a Delos product.
+  hosts_probed:
+  - delos.com
+  - wellcube.io
+  - cloud.wellcube.io
+  - app.wellcube.io
+server:
+  name: delos-wellcube
+  transport: http
+  url: null
+  published: false
+backing_api:
+  name: WellCube Cloud BE API
+  base_url: https://cloud.wellcube.io/api/v1
+  spec: openapi/delos-wellcube-cloud-be-openapi.yml
+  auth: Authorization header token — see authentication/delos-authentication.yml
+agent_safety_notes:
+- Every operation returns HTTP 200, including failures. An MCP server fronting this API MUST parse body.status
+  (1 success / 0 failure) rather than the HTTP status line, or it will report every error to the agent as a success.
+  See rate-limits/delos-rate-limits.yml for the live evidence.
+- The API offers no idempotency key. 18 of the 39 operations are writes, several of them destructive or irreversible
+  from an agent's point of view (adminProductDelete, adminUserProductsDelete, localAccountTransfer, userProductInvitationRevoke,
+  globalExecuteNVA). Any tool exposing these needs server-side replay protection or human confirmation.
+- globalExecuteNVA dispatches a command to physical building equipment on a live installation. It is the highest-consequence
+  operation in the surface and should not be exposed as an unattended agent tool.
+- No rate-limit headers are returned, so an MCP server cannot back off on signal and must pace itself conservatively.
+tool_count: 39
+tools:
+- name: session_create
+  description: 'Session: Create'
+  category: sessions
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#sessionCreate
+  method: POST
+  path: /sessions
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: session_validate
+  description: Validate auth token
+  category: sessions
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#sessionValidate
+  method: GET
+  path: /sessions/validate
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: false
+- name: limited_session_create
+  description: 'Session: Create Limited'
+  category: sessions
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#limitedSessionCreate
+  method: POST
+  path: /limited-sessions
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: limited_session_refresh
+  description: 'Session: Refresh Limited'
+  category: sessions
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#limitedSessionRefresh
+  method: POST
+  path: /limited-sessions/refresh
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: user_products_list
+  description: 'Users: List associated products with bundles'
+  category: users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#userProductsList
+  method: GET
+  path: /users/{userId}/products
+  input_from_spec:
+    path_params:
+    - userId
+    shared_params: []
+    request_body: false
+- name: user_product_invitation_create
+  description: 'Users: Product Invitation Create'
+  category: users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#userProductInvitationCreate
+  method: POST
+  path: /users/product-invitations
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: user_product_invitation_show
+  description: 'Users: Product Invitation Show'
+  category: users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#userProductInvitationShow
+  method: GET
+  path: /users/product-invitations/{invitationId}
+  input_from_spec:
+    path_params:
+    - invitationId
+    shared_params: []
+    request_body: false
+- name: user_product_invitation_confirm
+  description: 'Users: Product Invitation Confirm'
+  category: users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#userProductInvitationConfirm
+  method: POST
+  path: /users/product-invitations/{invitationId}/confirm
+  input_from_spec:
+    path_params:
+    - invitationId
+    shared_params: []
+    request_body: true
+- name: user_product_invitation_revoke
+  description: 'Users: Product Invitation Revoke'
+  category: users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#userProductInvitationRevoke
+  method: POST
+  path: /users/product-invitations/{invitationId}/revoke
+  input_from_spec:
+    path_params:
+    - invitationId
+    shared_params: []
+    request_body: false
+- name: user_product_invitation_renew
+  description: 'Users: Product Invitation Renew'
+  category: users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#userProductInvitationRenew
+  method: POST
+  path: /users/product-invitations/{invitationId}/renew
+  input_from_spec:
+    path_params:
+    - invitationId
+    shared_params: []
+    request_body: true
+- name: admin_user_cognito_session_create
+  description: 'Users: Cognito Session Create'
+  category: admin/users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminUserCognitoSessionCreate
+  method: POST
+  path: /admin/users/cognito-sessions
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: admin_user_limited_cognito_session_create
+  description: 'Users: Limited Cognito Session Create'
+  category: admin/users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminUserLimitedCognitoSessionCreate
+  method: POST
+  path: /admin/users/limited-cognito-sessions
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: admin_user_products_list
+  description: 'Users: List associated products with bundles'
+  category: admin/users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminUserProductsList
+  method: GET
+  path: /admin/users/{userId}/products
+  input_from_spec:
+    path_params:
+    - userId
+    shared_params: []
+    request_body: false
+- name: admin_user_products_create
+  description: 'Users: Create association with product'
+  category: admin/users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminUserProductsCreate
+  method: POST
+  path: /admin/users/{userId}/products/{productId}
+  input_from_spec:
+    path_params:
+    - userId
+    - productId
+    shared_params: []
+    request_body: true
+- name: admin_user_products_update
+  description: 'Users: Update association with product'
+  category: admin/users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminUserProductsUpdate
+  method: PUT
+  path: /admin/users/{userId}/products/{productId}
+  input_from_spec:
+    path_params:
+    - userId
+    - productId
+    shared_params: []
+    request_body: true
+- name: admin_user_products_delete
+  description: 'Users: Delete association with product'
+  category: admin/users
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminUserProductsDelete
+  method: DELETE
+  path: /admin/users/{userId}/products/{productId}
+  input_from_spec:
+    path_params:
+    - userId
+    - productId
+    shared_params: []
+    request_body: false
+- name: admin_installations_list
+  description: 'Installation: List'
+  category: admin/installations
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminInstallationsList
+  method: GET
+  path: /admin/installations
+  input_from_spec:
+    path_params:
+    - sortedBy
+    - search
+    - connected
+    - tags
+    - productName
+    - userId
+    shared_params:
+    - limit
+    - offset
+    - order
+    request_body: false
+- name: admin_installations_list_associated_products
+  description: 'Installation: List Products associations'
+  category: admin/installations
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminInstallationsListAssociatedProducts
+  method: GET
+  path: /admin/installations/{installationId}/products
+  input_from_spec:
+    path_params:
+    - installationId
+    shared_params: []
+    request_body: false
+- name: admin_installation_stats
+  description: 'Installation: Stats'
+  category: admin/installations
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminInstallationStats
+  method: GET
+  path: /admin/installations/{installationId}/stats
+  input_from_spec:
+    path_params:
+    - installationId
+    shared_params: []
+    request_body: false
+- name: admin_product_list
+  description: 'Product: List'
+  category: admin/products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductList
+  method: GET
+  path: /admin/products
+  input_from_spec:
+    path_params:
+    - sortedBy
+    - name
+    - resources
+    - isOpenRegistration
+    shared_params:
+    - limit
+    - offset
+    - order
+    request_body: false
+- name: admin_product_create
+  description: 'Product: Create'
+  category: admin/products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductCreate
+  method: POST
+  path: /admin/products
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: admin_product_stats
+  description: 'Product: Stats'
+  category: admin/products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductStats
+  method: GET
+  path: /admin/products/{productId}/stats
+  input_from_spec:
+    path_params:
+    - productId
+    shared_params: []
+    request_body: false
+- name: admin_product_show
+  description: 'Product: Show'
+  category: admin/products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductShow
+  method: GET
+  path: /admin/products/{productId}
+  input_from_spec:
+    path_params:
+    - productId
+    shared_params: []
+    request_body: false
+- name: admin_product_update
+  description: 'Product: Update'
+  category: admin/products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductUpdate
+  method: PUT
+  path: /admin/products/{productId}
+  input_from_spec:
+    path_params:
+    - productId
+    shared_params: []
+    request_body: true
+- name: admin_product_delete
+  description: 'Product: Delete'
+  category: admin/products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductDelete
+  method: DELETE
+  path: /admin/products/{productId}
+  input_from_spec:
+    path_params:
+    - productId
+    shared_params: []
+    request_body: false
+- name: admin_products_bundles_a_w_s_list
+  description: 'Product Bundle: List from AWS'
+  category: admin/products-bundles
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#adminProductsBundlesAWSList
+  method: GET
+  path: /admin/products-bundles/aws
+  input_from_spec:
+    path_params:
+    - search
+    shared_params: []
+    request_body: false
+- name: action_submit
+  description: 'Action: Submit'
+  category: actions
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#actionSubmit
+  method: POST
+  path: /actions/{actionId}
+  input_from_spec:
+    path_params:
+    - actionId
+    shared_params: []
+    request_body: true
+- name: action_show
+  description: 'Action: Show'
+  category: actions
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#actionShow
+  method: GET
+  path: /actions/{actionId}
+  input_from_spec:
+    path_params:
+    - actionId
+    shared_params: []
+    request_body: false
+- name: product_list
+  description: 'Product: List'
+  category: products
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#productList
+  method: GET
+  path: /products
+  input_from_spec:
+    path_params:
+    - sortedBy
+    - name
+    shared_params:
+    - limit
+    - offset
+    - order
+    request_body: false
+- name: installations_list
+  description: 'Installation: List'
+  category: installations
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#installationsList
+  method: GET
+  path: /installations
+  input_from_spec:
+    path_params:
+    - sortedBy
+    - productId
+    - productIsPrimary
+    shared_params:
+    - limit
+    - offset
+    - order
+    request_body: false
+- name: local_account_link
+  description: 'Local Account: Link'
+  category: local-accounts
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#localAccountLink
+  method: POST
+  path: /local-accounts/link
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: local_account_share
+  description: 'Local Account: Share'
+  category: local-accounts
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#localAccountShare
+  method: POST
+  path: /local-accounts/share
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: local_account_transfer
+  description: 'Local Account: Transfer'
+  category: local-accounts
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#localAccountTransfer
+  method: POST
+  path: /local-accounts/transfer
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: local_account_update
+  description: 'Local Account: Update'
+  category: local-accounts
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#localAccountUpdate
+  method: PUT
+  path: /local-accounts/{localAccountId}
+  input_from_spec:
+    path_params:
+    - localAccountId
+    shared_params: []
+    request_body: true
+- name: local_account_set_global
+  description: 'Local Account: Set Global'
+  category: local-accounts
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#localAccountSetGlobal
+  method: POST
+  path: /local-accounts/{localAccountId}/set-global
+  input_from_spec:
+    path_params:
+    - localAccountId
+    shared_params: []
+    request_body: true
+- name: local_account_migrate_to_federated
+  description: 'Local Account: Migrate to federated'
+  category: local-accounts
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#localAccountMigrateToFederated
+  method: POST
+  path: /admin/local-accounts/migrate-to-federated
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: global_execute_n_v_a
+  description: 'Global: ExecuteNVA'
+  category: global
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#globalExecuteNVA
+  method: POST
+  path: /global/execute-nva
+  input_from_spec:
+    path_params: []
+    shared_params: []
+    request_body: true
+- name: global_jobs_show
+  description: 'Global: Jobs Show'
+  category: global
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#globalJobsShow
+  method: GET
+  path: /global/jobs/{jobId}
+  input_from_spec:
+    path_params:
+    - jobId
+    shared_params: []
+    request_body: false
+- name: global_jobs_get_results
+  description: 'Global: Jobs Get Results'
+  category: global
+  source_operation: openapi/delos-wellcube-cloud-be-openapi.yml#globalJobsGetResults
+  method: GET
+  path: /global/jobs/{jobId}/results
+  input_from_spec:
+    path_params:
+    - jobId
+    - noun
+    shared_params:
+    - limit
+    - offset
+    request_body: false

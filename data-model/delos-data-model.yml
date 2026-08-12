@@ -1,0 +1,102 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+note: >-
+  Entity graph derived from components.schemas $ref links and from id-reference fields
+  (`productId`, `installationId`, `cloudUserId`, `userId`, `invitedBy`). Delos publishes no object
+  reference, so field semantics beyond what the spec declares are not recorded. Identifiers are
+  opaque UUIDs with no type prefixes.
+identifier_style:
+  format: uuid
+  prefixes: none
+  inconsistency: >-
+    `productId` is declared `format: uuid` on adminProduct{Show,Update,Delete,Stats} but
+    `format: string` on adminUserProducts{Create,Update,Delete}.
+entities:
+- name: Product
+  description: A WellCube/Darwin product line a user can be entitled to.
+  key: id (uuid)
+  fields: [id, name, details, resources, isOpenRegistration, canAssociateInstallation, createdAt, updatedAt, bundles, installationsToProduct]
+  operations: [productList, adminProductList, adminProductCreate, adminProductShow, adminProductUpdate, adminProductDelete, adminProductStats]
+- name: ProductBundle
+  description: A named bundle belonging to a product; AWS-backed bundles are listed separately.
+  key: id (uuid)
+  fields: [id, productId, bundleName, createdAt, updatedAt]
+  operations: [adminProductsBundlesAWSList]
+- name: Installation
+  description: >-
+    A deployed WellCube system on a site — the physical/network unit. Carries MAC address, IPv4
+    address, SSID and a live `connected` flag, plus free-form `tags[]` and an embedded `translators[]`
+    list (the protocol adapters bridging devices into the cloud).
+  key: id (uuid)
+  fields: [id, name, macAddress, ipAddress, ssid, connected, tags, localAccounts, translators, createdAt, updatedAt]
+  operations: [installationsList, adminInstallationsList, adminInstallationsListAssociatedProducts, adminInstallationStats]
+- name: InstallationToProduct
+  description: Join entity binding an installation to a product, with defaults for group and action.
+  key: id (uuid)
+  fields: [id, productId, installationId, defaultGroup, defaultAction, productName, installationName, createdAt, updatedAt]
+- name: LocalAccount
+  description: >-
+    The on-installation (local) user identity, bridged to a cloud user. Carries `localUserToken`,
+    `localUserGroups[]`, `localUserSites`, and `isPrimary`/`isLegacy` flags — the seam between the
+    legacy local account model and federated Cognito identity.
+  key: id (uuid)
+  fields: [id, installationId, cloudUserId, localUserId, localUserToken, localUserSites, localUserGroups, isPrimary, isLegacy, createdAt, updatedAt]
+  operations: [localAccountLink, localAccountShare, localAccountTransfer, localAccountUpdate, localAccountSetGlobal, localAccountMigrateToFederated]
+- name: ProductInvitation
+  description: An invitation entitling a user to a product; expires.
+  key: id (uuid)
+  fields: [id, userId, email, productName, invitedBy, isExpired, expiresAt, createdAt]
+  operations: [userProductInvitationCreate, userProductInvitationShow, userProductInvitationConfirm, userProductInvitationRevoke, userProductInvitationRenew]
+- name: Action
+  description: A typed, expiring command submitted against the system.
+  key: id (uuid)
+  fields: [id, type, data, isExpired, expiresAt, createdAt]
+  operations: [actionSubmit, actionShow]
+  note: '`data` is listed in `required` but has no property definition in the schema — an undeclared required field.'
+- name: AccessData
+  description: Token pair returned by the limited-session flow.
+  fields: [accessToken, refreshToken]
+  operations: [limitedSessionCreate, limitedSessionRefresh]
+- name: Job
+  description: >-
+    Asynchronous job produced by globalExecuteNVA and polled for state and results. NOT declared as a
+    component schema — it exists only as a `jobId` path parameter and inline responses.
+  key: jobId (uuid)
+  operations: [globalExecuteNVA, globalJobsShow, globalJobsGetResults]
+  note: Undeclared entity; a consumer cannot type the job or its results from the contract.
+relationships:
+- {from: Product, to: ProductBundle, type: has_many, via: 'Product.bundles[] ($ref ProductBundle)'}
+- {from: ProductBundle, to: Product, type: belongs_to, via: productId}
+- {from: Product, to: InstallationToProduct, type: has_many, via: 'Product.installationsToProduct[] ($ref InstallationToProduct)'}
+- {from: InstallationToProduct, to: Product, type: belongs_to, via: productId}
+- {from: InstallationToProduct, to: Installation, type: belongs_to, via: installationId}
+- {from: Installation, to: LocalAccount, type: has_many, via: 'Installation.localAccounts[] ($ref LocalAccount)'}
+- {from: LocalAccount, to: Installation, type: belongs_to, via: installationId}
+- {from: LocalAccount, to: User, type: belongs_to, via: cloudUserId}
+- {from: Installation, to: Translator, type: has_many, via: 'Installation.translators[] (inline object: id, name)'}
+- {from: ProductInvitation, to: User, type: belongs_to, via: userId}
+- {from: ProductInvitation, to: User, type: belongs_to, via: 'invitedBy (inviting user)'}
+- {from: ProductInvitation, to: Product, type: belongs_to, via: productName}
+- {from: User, to: Product, type: has_many, via: 'userProductsList / adminUserProducts* (entitlement join, no declared schema)'}
+implicit_entities:
+- name: User
+  reason: >-
+    Referenced by `userId` on 6 operations, by `cloudUserId` on LocalAccount and by `userId`/`invitedBy`
+    on ProductInvitation, but NEVER declared as a components.schema. The API has no operation that
+    returns a user object — only a user's product entitlements.
+- name: Translator
+  reason: Embedded inline in Installation.translators[] as {id, name}; no standalone schema or operation.
+- name: Job
+  reason: See Job above.
+embedding:
+  style: unconditional
+  note: >-
+    There is no `expand` or `fields` parameter. Installation always serialises `localAccounts[]` and
+    `translators[]`; Product always serialises `bundles[]` and `installationsToProduct[]`. A caller
+    listing installations cannot opt out of the nested payload.
+coverage:
+  declared_schemas: 8
+  entities_modelled: 9
+  implicit_entities: 3
+  relationships: 13

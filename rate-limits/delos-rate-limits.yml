@@ -1,0 +1,47 @@
+generated: '2026-08-12'
+method: probed
+source: live unauthenticated responses from https://cloud.wellcube.io/api/v1
+docs: null
+limit_count: 0
+published: false
+evidence:
+- request: GET https://cloud.wellcube.io/api/v1/products
+  status: 200
+  observed_headers: [date, content-type, content-length, x-powered-by, access-control-allow-origin, access-control-allow-methods, access-control-allow-headers, etag]
+  rate_limit_headers: none
+- request: POST https://cloud.wellcube.io/api/v1/sessions
+  status: 200
+  observed_headers: [date, content-type, content-length, x-powered-by, access-control-allow-origin, access-control-allow-methods, access-control-allow-headers, etag]
+  rate_limit_headers: none
+limits: []
+headers:
+  x_ratelimit: not returned
+  ratelimit_draft: not returned
+  retry_after: not returned
+  status_on_exhaustion: not documented and not observed
+note: >-
+  Delos publishes no rate limits for the Cloud BE API — there is no developer documentation beyond the
+  Swagger UI, and the OpenAPI declares no throttling response. limit_count is an honest zero.
+
+  Two live unauthenticated requests were made (a list read and a deliberately-failing login with an
+  invalid @example.invalid address) and neither response carried any `X-RateLimit-*`, `RateLimit-*` or
+  `Retry-After` header. The only headers returned are CORS, caching and `x-powered-by: Express`.
+
+  Because throttling is neither documented nor signalled in headers, a client has no way to back off
+  correctly. This compounds the absence of an idempotency contract (see
+  conventions/delos-conventions.yml): a caller that is throttled cannot detect it from a header and
+  cannot safely retry the 18 write operations.
+observed_runtime_behaviour:
+  http_status_always_200: true
+  detail: >-
+    Both probes returned HTTP 200 even on failure. The unauthenticated read returned
+    `{"status":0,"error":{"fields":{"token":"REQUIRED"},"code":"FORMAT_ERROR"}}` and the bad-credential
+    login returned `{"status":0,"error":{"code":"AUTHENTICATION_FAILED",...}}` — both with a 200 status
+    line. This confirms in production what the OpenAPI implies by declaring no HTTP status codes: the
+    body `status` flag is the ONLY outcome signal. Any agent, proxy, retry library or monitor that
+    keys on HTTP status will read every failure as a success.
+  cors:
+    access_control_allow_origin: '*'
+    access_control_allow_methods: [GET, PUT, POST, DELETE]
+    access_control_allow_headers: [Trace-Id, Content-Type, cache-control, pragma, Authorization]
+  server: Express (x-powered-by)

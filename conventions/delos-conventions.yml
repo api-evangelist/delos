@@ -1,0 +1,161 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+docs: https://cloud.wellcube.io/api/v1/docs/
+note: >-
+  Delos publishes no prose API guide — the Swagger UI at https://cloud.wellcube.io/api/v1/docs/ is the
+  entire developer surface. Every convention below is derived from the OpenAPI document itself. Where a
+  convention is absent, it is recorded as absent rather than assumed.
+authentication:
+  style: header token
+  header: Authorization
+  scheme_type: apiKey
+  applied: global (root-level security requirement; all 39 operations)
+  see: authentication/delos-authentication.yml
+response_envelope:
+  style: status-flag wrapper
+  shape: '{ "status": <integer>, "data": <object> } on success; { "status": <integer>, "error": { "code": <string>, "fields": <object> } } on failure'
+  success_status_value: 1
+  failure_status_value: 0
+  note: >-
+    The API does not signal outcome through HTTP status codes in its contract. Every operation declares
+    exactly one `default` response plus a set of NON-STANDARD response keys (`x-permission-denied`,
+    `x-not-exists`, `x-wrong-token`, …) in place of `400`/`401`/`403`/`404`/`409`/`500`. A generic
+    OpenAPI client cannot map these to HTTP semantics — see errors/delos-error-codes.yml. This is the
+    single largest contract defect in the spec.
+error_envelope:
+  field: error
+  code_field: error.code
+  detail_field: error.fields
+  format: proprietary
+  rfc9457: false
+  content_type: application/json
+  problem_json: false
+  see: errors/delos-error-codes.yml
+pagination:
+  style: offset
+  params:
+  - {name: limit, in: query, type: integer, example: 20, ref: '#/components/parameters/limit'}
+  - {name: offset, in: query, type: integer, example: 0, ref: '#/components/parameters/offset'}
+  applies_to:
+  - adminInstallationsList
+  - adminProductList
+  - productList
+  - installationsList
+  - globalJobsGetResults
+  response_fields: none declared
+  note: >-
+    limit/offset are declared as reusable `components.parameters` and referenced by the five list
+    operations. Neither has a `required`, `default`, `minimum` or `maximum`. No total-count, next-link
+    or has-more field is declared on any response, so a client cannot tell when it has reached the end
+    of a collection without over-fetching.
+sorting:
+  params:
+  - {name: sortedBy, in: query, enum: [createdAt, updatedAt], example: createdAt}
+  - {name: order, in: query, enum: [ASC, DESC], example: DESC}
+  per_operation_overrides:
+  - {operation: adminInstallationsList, sortedBy_enum: [id, localUserName, createdAt, updatedAt]}
+  - {operation: adminProductList, sortedBy_enum: [id, localUserName, createdAt, updatedAt]}
+  - {operation: installationsList, sortedBy_enum: [id, name, createdAt, updatedAt]}
+  - {operation: productList, sortedBy_enum: [id, name, createdAt, updatedAt]}
+filtering:
+  params:
+  - {name: search, operations: [adminInstallationsList, adminProductsBundlesAWSList]}
+  - {name: name, operations: [adminProductList, productList]}
+  - {name: connected, type: boolean, operations: [adminInstallationsList]}
+  - {name: productName, operations: [adminInstallationsList]}
+  - {name: tags, type: array, operations: [adminInstallationsList]}
+  - {name: userId, type: uuid, operations: [adminInstallationsList]}
+  - {name: isOpenRegistration, type: boolean, operations: [adminProductList]}
+  - {name: resources, operations: [adminProductList]}
+  - {name: productId, operations: [installationsList]}
+  - {name: productIsPrimary, type: boolean, operations: [installationsList]}
+  - {name: noun, operations: [globalJobsGetResults]}
+identifiers:
+  style: uuid
+  note: >-
+    Every path parameter is `type: string, format: uuid` — actionId, installationId, invitationId,
+    jobId, localAccountId, productId, userId — with one inconsistency: adminUserProducts{Create,Update,Delete}
+    declare `productId` as `format: string` while adminProduct{Show,Update,Delete,Stats} declare the same
+    concept as `format: uuid`. No type prefixes; ids are opaque UUIDs.
+async:
+  style: submit-then-poll
+  submit_operations: [globalExecuteNVA, actionSubmit]
+  poll_operations: [globalJobsShow, globalJobsGetResults]
+  job_id: uuid
+  note: >-
+    Long-running device/system commands are dispatched via POST /global/execute-nva, which returns a
+    job id; the caller then polls GET /global/jobs/{jobId} for state and GET /global/jobs/{jobId}/results
+    (paginated, filterable by `noun`) for output. `actions` follow the same shape at a per-action
+    granularity, with an `isExpired`/`expiresAt` lifetime on the Action resource.
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key, request-id, or replay-protection mechanism appears anywhere in the spec — not
+    as a parameter, not as a header, not as a component. Every write operation (18 of 39) is therefore
+    unsafe to retry blind. Deliberately NOT wired as `type: Idempotency` in apis.yml: the pointer would
+    assert a contract the provider does not offer.
+request_tracing:
+  request_id_header: Trace-Id
+  declared_in_spec: false
+  method: probed
+  source: live CORS preflight allowance on https://cloud.wellcube.io/api/v1
+  note: >-
+    The API advertises `Trace-Id` in its
+    `Access-Control-Allow-Headers: Trace-Id, Content-Type, cache-control, pragma, Authorization`
+    response header, so a caller-supplied trace identifier IS accepted. It appears nowhere in the
+    OpenAPI — not as a parameter, not as a header component — and it is not echoed back on the
+    responses observed. Discoverable only by reading the CORS policy.
+  correlation: not documented
+http_status_usage:
+  method: probed
+  always_200: true
+  note: >-
+    Confirmed live, not just inferred from the spec. GET /products without a token and
+    POST /sessions with invalid credentials BOTH returned HTTP 200 with a JSON failure body. The HTTP
+    status line carries no information; `body.status` (1 success / 0 failure) is the only outcome
+    signal the API emits.
+  server: Express (x-powered-by header)
+  cors:
+    access_control_allow_origin: '*'
+    access_control_allow_methods: [GET, PUT, POST, DELETE]
+    access_control_allow_headers: [Trace-Id, Content-Type, cache-control, pragma, Authorization]
+caching:
+  etag: true
+  note: Weak ETags are returned on responses (e.g. W/"4a-..."); no Cache-Control directive observed.
+rate_limit_signaling:
+  headers: none declared and none observed live
+  status_on_exhaustion: not documented
+  see: rate-limits/delos-rate-limits.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://cloud.wellcube.io/api/v1
+  spec_version: 11.13.9
+  note: >-
+    The path segment is `v1` while `info.version` is `11.13.9` — the build version of the service, not
+    the contract version. There is no published mapping between the two and no changelog, so a consumer
+    cannot tell which service build a given behaviour belongs to.
+  see: lifecycle/delos-lifecycle.yml
+field_expansion:
+  supported: false
+  note: >-
+    No `expand`/`fields`/`include` parameter. Related objects are instead embedded unconditionally —
+    Installation always carries `localAccounts[]` and `translators[]`; Product always carries `bundles[]`
+    and `installationsToProduct[]`.
+metadata:
+  user_defined: partial
+  note: Installation carries a free-form `tags[]` string array, filterable on adminInstallationsList. No other user-defined metadata surface.
+content_types:
+  request: [application/json]
+  response: [application/json]
+timestamps:
+  format: RFC 3339 date-time
+  fields: [createdAt, updatedAt, expiresAt]
+cross_links:
+  errors: errors/delos-error-codes.yml
+  authentication: authentication/delos-authentication.yml
+  lifecycle: lifecycle/delos-lifecycle.yml
+  data_model: data-model/delos-data-model.yml
+  rate_limits: rate-limits/delos-rate-limits.yml

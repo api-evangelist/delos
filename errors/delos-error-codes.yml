@@ -1,0 +1,342 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+docs: https://cloud.wellcube.io/api/v1/docs/
+format: proprietary
+rfc9457: false
+problem_json: false
+envelope:
+  shape: '{ "status": 0, "error": { "code": "<CODE>", "fields": { ... } } }'
+  code_field: error.code
+  detail_field: error.fields
+  content_type: application/json
+note: >-
+  Delos publishes no error reference page — this catalogue is derived entirely from the OpenAPI at
+  https://cloud.wellcube.io/api/v1/docs/. Two things about it are unusual enough to state plainly.
+
+  First, the API declares NO HTTP status codes. Every one of the 39 operations has exactly one
+  `default` response; every failure is declared under a NON-STANDARD response key beginning `x-`
+  (`x-permission-denied`, `x-not-exists`, `x-wrong-token`, …). OpenAPI 3.0 requires response map keys
+  to be HTTP status codes, ranges such as `4XX`, or `default`, so these keys are outside the
+  specification. A generated client, a mock server, or an agent reading this contract cannot learn
+  which HTTP status any failure returns, because the document never says.
+
+  Second, the machine-readable error identity does exist, just one level down: fourteen reusable
+  `components.responses` entries each pin a concrete `error.code` string. Those codes — listed below —
+  are the real error registry a consumer should switch on, and they are what makes this contract
+  usable despite the response-key problem.
+error_codes:
+- {code: PERMISSION_DENIED, title: permission-denied, component: PermissionDeniedError}
+- {code: NOT_EXISTS, title: Entity not exists, component: NotExistsError}
+- {code: NOT_FOUND, title: Not found, component: NotFoundError}
+- {code: ALREADY_EXISTS, title: Entity already exists, component: AlreadyExistsError}
+- {code: NOT_UNIQUE, title: Entity data is not unique, component: NotUniqueError}
+- {code: WRONG_ID, title: wrong-id, component: WrongIdError}
+- {code: EXPIRED, title: Entity has expired state, component: ExpiredError}
+- {code: ACTION_NOT_ALLOWED, title: Action not allowed, component: ActionNotAllowedError}
+- {code: AUTHENTICATION_FAILED, title: Authentication failed, component: AuthFailedError}
+- {code: WRONG_TOKEN, title: Wrong token, component: WrongTokenError}
+- {code: USER_NOT_VALID, title: User coded in token is not valid, component: UserNotValidTokenError}
+- {code: USER_NOT_ACTIVE, title: User coded in token is not active, component: UserNotActiveTokenError}
+- {code: INSTALLATION_WRONG_CREDENTIALS, title: Wrong credentials, component: InstallationWrongCredentialsError}
+- {code: INSTALLATION_NVA_ERROR, title: Error occurred in Installation after sending nva, component: InstallationNvaError}
+field_level_codes:
+  note: >-
+    `error.fields` is a free-form object on most components, but the three session operations declare
+    its shape inline with per-field verdict strings.
+  observed:
+  - {field: email, values: [INVALID]}
+  - {field: password, values: [INVALID]}
+  - {field: status, values: [NOT_ACTIVE_USER]}
+  - {field: token, values: [EXPIRED]}
+observed_live:
+  method: probed
+  date: '2026-08-12'
+  note: >-
+    Two unauthenticated probes against the live API returned error codes and an envelope field that
+    the OpenAPI does not document. Recorded here as observed fact, not merged into the derived
+    registry above.
+  observations:
+  - request: GET https://cloud.wellcube.io/api/v1/products
+    http_status: 200
+    body: '{"status":0,"error":{"fields":{"token":"REQUIRED"},"code":"FORMAT_ERROR"}}'
+    findings:
+    - '`FORMAT_ERROR` is returned for a missing Authorization token. It appears in NO components.responses entry and in no operation''s response map — an undocumented error code on the most common failure any consumer will hit.'
+    - '`fields.token: REQUIRED` is an undocumented field verdict.'
+  - request: POST https://cloud.wellcube.io/api/v1/sessions (invalid credentials)
+    http_status: 200
+    body: '{"status":0,"error":{"code":"AUTHENTICATION_FAILED","message":"Authentication failed","fields":{"code":"AUTHENTICATION_FAILED","email":"INVALID","password":"INVALID"}}}'
+    findings:
+    - The live envelope carries an `error.message` string that the OpenAPI never declares — every documented error component declares only `code` and `fields`.
+    - '`error.fields` echoes `code` back inside itself, which the spec does not model.'
+    - HTTP 200 on an authentication failure, confirming the status-flag contract in production.
+spec_defects:
+- id: non-http-response-keys
+  severity: high
+  detail: >-
+    All 19 failure response keys are `x-`-prefixed strings rather than HTTP status codes. No operation
+    declares a 2xx, 4xx or 5xx response. Tooling that keys off status codes (generators, mocks,
+    contract tests, agent runtimes) gets nothing.
+- id: mis-referenced-component
+  severity: medium
+  detail: >-
+    `localAccountSetGlobal` declares its `x-permission-denied` response as
+    `InstallationWrongCredentialsError` (code INSTALLATION_WRONG_CREDENTIALS) while the other 27
+    operations using that same key reference `PermissionDeniedError` (code PERMISSION_DENIED). One of
+    the two is wrong; a consumer cannot tell which from the document alone.
+- id: misspelled-key
+  severity: low
+  detail: '`x-authentification-failed` — the response key is misspelled (authentification/authentication).'
+- id: undocumented-error-code
+  severity: high
+  detail: >-
+    The live API returns `FORMAT_ERROR` for a missing/invalid Authorization token — the single most
+    common failure mode — and that code exists nowhere in the published contract. It also returns an
+    `error.message` field the schema does not declare.
+- id: undocumented-remediation
+  severity: medium
+  detail: >-
+    No component carries remediation guidance, retry advice, or a documentation link. Titles are
+    single-phrase and several are slugs rather than sentences ("permission-denied", "wrong-id").
+by_response_key:
+- response_key: x-permission-denied
+  codes:
+  - INSTALLATION_WRONG_CREDENTIALS
+  - PERMISSION_DENIED
+  title: Wrong credentials
+  component:
+  - InstallationWrongCredentialsError
+  - PermissionDeniedError
+  operation_count: 28
+  operations:
+  - adminInstallationStats
+  - adminInstallationsList
+  - adminInstallationsListAssociatedProducts
+  - adminProductCreate
+  - adminProductDelete
+  - adminProductList
+  - adminProductShow
+  - adminProductStats
+  - adminProductUpdate
+  - adminProductsBundlesAWSList
+  - adminUserCognitoSessionCreate
+  - adminUserLimitedCognitoSessionCreate
+  - adminUserProductsCreate
+  - adminUserProductsDelete
+  - adminUserProductsList
+  - adminUserProductsUpdate
+  - globalJobsGetResults
+  - globalJobsShow
+  - localAccountMigrateToFederated
+  - localAccountSetGlobal
+  - localAccountShare
+  - localAccountTransfer
+  - localAccountUpdate
+  - userProductInvitationConfirm
+  - userProductInvitationCreate
+  - userProductInvitationRenew
+  - userProductInvitationRevoke
+  - userProductsList
+- response_key: x-not-exists
+  codes:
+  - NOT_EXISTS
+  title: Entity not exists
+  component:
+  - NotExistsError
+  operation_count: 12
+  operations:
+  - adminUserProductsCreate
+  - adminUserProductsList
+  - adminUserProductsUpdate
+  - globalExecuteNVA
+  - globalJobsGetResults
+  - globalJobsShow
+  - localAccountLink
+  - localAccountMigrateToFederated
+  - localAccountSetGlobal
+  - localAccountShare
+  - localAccountTransfer
+  - localAccountUpdate
+- response_key: x-action-not-allowed
+  codes:
+  - ACTION_NOT_ALLOWED
+  title: Action not allowed
+  component:
+  - ActionNotAllowedError
+  operation_count: 4
+  operations:
+  - adminUserProductsUpdate
+  - globalJobsGetResults
+  - localAccountShare
+  - localAccountTransfer
+- response_key: x-action-not-exists
+  codes:
+  - NOT_EXISTS
+  title: Entity not exists
+  component:
+  - NotExistsError
+  operation_count: 4
+  operations:
+  - userProductInvitationConfirm
+  - userProductInvitationRenew
+  - userProductInvitationRevoke
+  - userProductInvitationShow
+- response_key: x-darwin-core-error
+  codes:
+  - INSTALLATION_NVA_ERROR
+  title: Error occurred in Installation after sending nva
+  component:
+  - InstallationNvaError
+  operation_count: 4
+  operations:
+  - localAccountLink
+  - localAccountSetGlobal
+  - localAccountShare
+  - localAccountTransfer
+- response_key: x-product-not-exists
+  codes:
+  - NOT_EXISTS
+  title: Entity not exists
+  component:
+  - NotExistsError
+  operation_count: 4
+  operations:
+  - userProductInvitationConfirm
+  - userProductInvitationCreate
+  - userProductInvitationRenew
+  - userProductInvitationRevoke
+- response_key: x-wrong-id
+  codes:
+  - WRONG_ID
+  title: wrong-id
+  component:
+  - WrongIdError
+  operation_count: 4
+  operations:
+  - adminInstallationStats
+  - adminProductDelete
+  - adminProductShow
+  - adminProductStats
+- response_key: x-already-exists
+  codes:
+  - ALREADY_EXISTS
+  title: Entity already exists
+  component:
+  - AlreadyExistsError
+  operation_count: 3
+  operations:
+  - localAccountLink
+  - localAccountShare
+  - localAccountTransfer
+- response_key: x-authentification-failed
+  codes:
+  - AUTHENTICATION_FAILED
+  - EXPIRED
+  - INVALID
+  - NOT_ACTIVE_USER
+  title: null
+  component:
+  - (inline)
+  operation_count: 3
+  operations:
+  - limitedSessionCreate
+  - limitedSessionRefresh
+  - sessionCreate
+- response_key: x-user-not-exists
+  codes:
+  - NOT_EXISTS
+  title: Entity not exists
+  component:
+  - NotExistsError
+  operation_count: 3
+  operations:
+  - userProductInvitationConfirm
+  - userProductInvitationRenew
+  - userProductInvitationRevoke
+- response_key: x-wrong-credentials
+  codes:
+  - INSTALLATION_WRONG_CREDENTIALS
+  title: Wrong credentials
+  component:
+  - InstallationWrongCredentialsError
+  operation_count: 3
+  operations:
+  - localAccountLink
+  - localAccountShare
+  - localAccountTransfer
+- response_key: x-auth-failed
+  codes:
+  - AUTHENTICATION_FAILED
+  title: Authentication failed
+  component:
+  - AuthFailedError
+  operation_count: 2
+  operations:
+  - adminUserCognitoSessionCreate
+  - adminUserLimitedCognitoSessionCreate
+- response_key: x-not-unique
+  codes:
+  - NOT_UNIQUE
+  title: null
+  component:
+  - (inline)
+  operation_count: 2
+  operations:
+  - adminProductCreate
+  - adminProductUpdate
+- response_key: x-action-expired
+  codes:
+  - EXPIRED
+  title: Entity has expired state
+  component:
+  - ExpiredError
+  operation_count: 1
+  operations:
+  - userProductInvitationConfirm
+- response_key: x-not-found
+  codes:
+  - NOT_FOUND
+  title: Not found
+  component:
+  - NotFoundError
+  operation_count: 1
+  operations:
+  - globalExecuteNVA
+- response_key: x-user-not-active-token
+  codes:
+  - USER_NOT_ACTIVE
+  - WRONG_TOKEN
+  title: User coded in token is not active
+  component:
+  - UserNotActiveTokenError
+  operation_count: 1
+  operations:
+  - sessionValidate
+- response_key: x-user-not-unique
+  codes:
+  - NOT_UNIQUE
+  title: Entity data is not unique
+  component:
+  - NotUniqueError
+  operation_count: 1
+  operations:
+  - userProductInvitationCreate
+- response_key: x-user-not-valid-token
+  codes:
+  - USER_NOT_VALID
+  - WRONG_TOKEN
+  title: User coded in token is not valid
+  component:
+  - UserNotValidTokenError
+  operation_count: 1
+  operations:
+  - sessionValidate
+- response_key: x-wrong-token
+  codes:
+  - WRONG_TOKEN
+  title: Wrong token
+  component:
+  - WrongTokenError
+  operation_count: 1
+  operations:
+  - sessionValidate

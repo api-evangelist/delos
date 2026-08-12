@@ -1,0 +1,87 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+note: >-
+  Derived from the OpenAPI document and from live probes of the Delos/WellCube hosts. Delos publishes
+  no compliance page, no trust centre and no certification list on any host probed, so no `Compliance`
+  pointer is emitted in apis.yml.
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: 'openapi: 3.0.0 served at https://cloud.wellcube.io/api/v1/docs/ (via swagger-ui-init.js); parses; 33 paths, 39 operations'
+- id: openapi-response-keys
+  conforms: false
+  evidence: >-
+    OpenAPI 3.0 requires responses map keys to be an HTTP status code, a range (`4XX`), or `default`.
+    All 19 failure keys in this document are `x-`-prefixed strings. Structurally the document loads in
+    Swagger UI, but the response map is not conformant.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: 'errors use a proprietary {status, error:{code, fields}} envelope on application/json; no application/problem+json anywhere'
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: no Sunset or Deprecation header documented; no deprecation policy published
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: '/.well-known/security.txt returns 404 on delos.com and wellcube.io; SPA shell (soft 200) on cloud.wellcube.io and app.wellcube.io'
+- id: oauth2
+  conforms: false
+  evidence: >-
+    No oauth2 securityScheme in the OpenAPI. The API mints its own tokens through
+    POST /sessions and POST /limited-sessions and accepts them as an `Authorization` apiKey header.
+- id: oidc
+  conforms: partial
+  evidence: >-
+    The WellCube web application federates to an AWS Cognito user pool
+    (us-east-1_QNxQ6AqaQ) whose OIDC discovery document and JWKS both return 200. The Cloud BE API
+    itself does not declare an openIdConnect securityScheme; it exposes Cognito only through two
+    admin-scoped session-exchange operations.
+- id: rest
+  conforms: partial
+  evidence: >-
+    Resource-oriented paths and correct method semantics (GET list/show, POST create, PUT update,
+    DELETE remove), but outcome is signalled in a body `status` flag rather than in the HTTP status
+    line, and several state changes are modelled as POST verbs on sub-paths
+    (/confirm, /revoke, /renew, /set-global, /link, /share, /transfer).
+- id: json-api
+  conforms: false
+  evidence: no application/vnd.api+json; envelope is proprietary
+- id: odata
+  conforms: false
+- id: scim
+  conforms: false
+  evidence: user/entitlement management is a bespoke /users + /admin/users surface, not SCIM 2.0
+- id: fhir-r4
+  conforms: false
+  evidence: not a healthcare data API
+- id: pagination
+  conforms: true
+  evidence: 'reusable components.parameters limit + offset, referenced by 5 list operations; no total-count or next-link field declared'
+- id: idempotency
+  conforms: false
+  evidence: no idempotency key, request-id or replay-protection mechanism anywhere in the spec (18 write operations)
+- id: asyncapi
+  conforms: false
+  evidence: >-
+    An event surface exists in the product (wss://ugw.wellcube.io/clients-socket, named in the
+    WellCube app's public runtime config) but no AsyncAPI document is published for it. See
+    asyncapi/delos-events.yml.
+- id: bacnet
+  conforms: unknown
+  evidence: >-
+    The WellCube platform page advertises a "Partner Ecosystem" for BMS/BAS control, but no protocol
+    is named on any public page and no building-automation surface appears in the OpenAPI.
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  probed:
+  - {url: 'https://trust.delos.com/', status: 0, note: NXDOMAIN}
+  - {url: 'https://security.delos.com/', status: 0, note: NXDOMAIN}
+  - {url: 'https://delos.com/security/', status: 404}
+  - {url: 'https://delos.com/trust/', status: 404}
+  note: >-
+    Delos publishes extensive building-science research and is the originator of the WELL Building
+    Standard, but that is a BUILDING certification, not an information-security or data-protection
+    compliance program for its API. No SOC 2, ISO 27001, HIPAA, PCI or GDPR posture is published on
+    any host probed. Deliberately not recorded as a compliance claim.

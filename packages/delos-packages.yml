@@ -1,0 +1,71 @@
+generated: '2026-08-12'
+method: searched
+source: https://registry.npmjs.org/-/v1/search?text=maintainer:jacobbailly_delos
+note: >-
+  Delos publishes no client SDK for the WellCube Cloud BE API. The two npm packages below are the only
+  first-party Delos Living publications found across npm, PyPI, RubyGems, crates.io, NuGet, Maven Central
+  and pkg.go.dev — both are React Native UI plugin artifacts for the DARWIN mobile app, not API clients,
+  and neither has been republished since 2023. Registry searches were run against the exact npm maintainer
+  account (jacobbailly_delos, jacob.bailly@delos.com) rather than by name match, because the name "Delos"
+  collides with at least two unrelated publishers: @delosaqua/* and @warmandelos/* (Delos Aqua, water
+  treatment) and PyPI `delos` (Delos Intelligence, delosintelligence.fr). Those are NOT Delos Living and
+  are deliberately excluded.
+packages:
+- language: javascript
+  registry: npm
+  name: darwin-ux-rnplugin-ratings
+  url: https://www.npmjs.com/package/darwin-ux-rnplugin-ratings
+  install: npm install darwin-ux-rnplugin-ratings
+  official: true
+  version: 1.0.0
+  published: '2021-10-26'
+  description: Delos Dreact Native Ratings Plugin
+  scope: DARWIN mobile app UI component — not an API client
+  evidence: npm maintainer jacobbailly_delos <jacob.bailly@delos.com>
+  note: >-
+    Single published version. Last release 2021-10-26; registry `modified` 2022-04-28. No repository
+    field, no homepage, no README of substance.
+- language: javascript
+  registry: npm
+  name: ux-plugins
+  url: https://www.npmjs.com/package/ux-plugins
+  install: npm install ux-plugins
+  official: true
+  version: 1.0.0
+  published: '2023-04-24'
+  description: A monorepo for ux-plugins
+  repository: https://github.com/Delos-tech/ux-plugins
+  scope: React Native plugin monorepo — not an API client
+  evidence: >-
+    npm maintainer jacobbailly_delos <jacob.bailly@delos.com>; repository field resolves to the
+    Delos-tech GitHub organization, whose profile self-identifies as "Delos Living".
+  note: >-
+    Single published version, 2023-04-24. The linked GitHub repository is not among the two public
+    repositories on the Delos-tech org, so the source is private or removed.
+registries_checked:
+- registry: npm
+  result: 2 first-party packages (above)
+- registry: pypi
+  result: >-
+    none. pypi.org/project/delos/ exists but is authored by mariaibanez@delosintelligence.fr
+    (Delos Intelligence) — a different company; excluded.
+- registry: rubygems
+  result: none
+- registry: crates.io
+  result: none
+- registry: nuget
+  result: none
+- registry: maven-central
+  result: none
+- registry: pkg.go.dev
+  result: none
+- registry: cdn
+  result: >-
+    none. The WellCube web app (app.wellcube.io) ships a self-hosted Vite bundle; no unpkg/jsDelivr
+    distributed Delos component library was found.
+sdk_summary:
+  official_api_clients: 0
+  note: >-
+    Zero official client libraries for the documented Cloud BE API. Consumers must call
+    https://cloud.wellcube.io/api/v1 directly. No `SDKs` pointer is emitted for this provider because
+    no SDK exists — the two npm packages are catalogued as Packages only.

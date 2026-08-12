@@ -1,0 +1,85 @@
+generated: '2026-08-12'
+method: probed
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+evidence:
+- {url: 'https://cloud.wellcube.io/api/v1/docs/', status: 200}
+- {url: 'https://status.delos.com/', status: 0, note: DNS does not resolve}
+- {url: 'https://delos.com/pricing/', status: 404}
+- {url: 'https://wellcube.io/pricing', status: 404}
+- {url: 'https://docs.wellcube.io/', status: 404, note: 'host resolves; S3 bucket returns NoSuchKey for index.html — an empty docs host'}
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://cloud.wellcube.io/api/v1
+  build_version: 11.13.9
+  docs: https://cloud.wellcube.io/api/v1/docs/
+  policy_published: false
+  note: >-
+    `info.version` is 11.13.9 — a service build number — while the callable contract is pinned at the
+    `/v1` path segment. Delos publishes no policy stating what a major bump to 11.x means for /v1
+    consumers, and no mapping between build version and contract version.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: unknown
+  deprecation_header: unknown
+  deprecated_operations: []
+  in_spec_deprecation_signals:
+  - operation: sessionCreate
+    signal: response description
+    text: Deprecated create session response
+    note: >-
+      The only deprecation signal in the entire contract, and it is prose inside a response
+      description rather than the OpenAPI `deprecated: true` flag. It marks the response envelope of
+      the API's primary login operation as deprecated. No sunset date, no migration note, and the
+      operation itself is not flagged deprecated. The apparent successor — `limitedSessionCreate`,
+      which returns a typed `AccessData` access/refresh pair instead of a bare `jwt` — is never
+      identified as such anywhere in the document.
+  assessment: >-
+    No deprecation policy is published. No `Deprecation` pointer is emitted in apis.yml: a single
+    prose string inside one response description is not a policy.
+sla:
+  url: null
+  uptime_target: null
+  published: false
+status_page:
+  url: null
+  probed:
+  - {host: 'https://status.delos.com/', result: NXDOMAIN}
+  - {host: 'https://delos.wellcube.statuspage.io/', result: NXDOMAIN}
+  - {host: 'https://status.wellcube.io/', result: NXDOMAIN}
+  found: false
+  note: >-
+    No status page exists on any Delos or WellCube host. `wellcube.statuspage.io` and
+    `delos.statuspage.io` both redirect to Atlassian's product marketing page, which is Statuspage's
+    behaviour for an UNCLAIMED subdomain — not a Delos page. No `StatusPage` pointer is emitted.
+changelog:
+  url: null
+  published: false
+  note: >-
+    No dated changelog for the Cloud BE API. The Swagger UI exposes `info.version` (11.13.9) and
+    nothing else, so a consumer has no way to see what changed between builds. No `ChangeLog` pointer
+    is emitted; no changelog/ artifact is written, because there is nothing to capture.
+support:
+  url: https://support.wellcube.io/hc/en-us
+  platform: Zendesk Help Center
+  probe_status: 403
+  probe_note: >-
+    Returns HTTP 403 with a Cloudflare interstitial ("Just a moment...") to a non-browser client. The
+    centre is public to humans; it is not machine-readable.
+  contact: https://wellcube.io/contact
+maturity_signals:
+  positives:
+  - Live, publicly reachable OpenAPI 3.0.0 document with 39 operations and 8 reusable schemas.
+  - 14 reusable error response components with pinned error codes.
+  - Reusable pagination/sorting parameter components shared across all five list operations.
+  - Federated identity on AWS Cognito with a working, anonymous OIDC discovery document.
+  concerns:
+  - No HTTP status codes anywhere in the contract (see errors/delos-error-codes.yml).
+  - No changelog, no status page, no SLA, no deprecation policy.
+  - No client SDK in any registry; the two first-party npm packages are mobile UI plugins last
+    published 2021 and 2023 (see packages/delos-packages.yml).
+  - '`docs.wellcube.io` resolves to an empty S3 bucket — a documentation host that was provisioned and never filled.'
+  - The public product page advertises an API for BMS/BAS, ESG and workplace-management integration
+    but routes every enquiry to "Reach out to us"; the callable contract at cloud.wellcube.io is not
+    linked from it.

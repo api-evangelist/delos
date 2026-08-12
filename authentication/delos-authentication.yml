@@ -1,0 +1,85 @@
+generated: '2026-08-12'
+method: searched
+source: openapi/delos-wellcube-cloud-be-openapi.yml
+docs: https://cloud.wellcube.io/api/v1/docs/
+evidence:
+- https://cloud.wellcube.io/api/v1/docs/
+- https://app.wellcube.io/config.js
+- https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ/.well-known/openid-configuration
+summary:
+  types:
+  - apiKey
+  - openIdConnect
+  api_key_in:
+  - header
+  oauth2_flows: []
+  note: >-
+    The OpenAPI declares exactly one security scheme — an apiKey named `Authorization` carried in the
+    request header — and applies it globally via a root-level `security` requirement, so all 39
+    operations are authenticated. The scheme is declared as `apiKey` rather than
+    `http`/`bearer`, which is a spec-modelling choice, not a second mechanism: the value is the JWT
+    the API itself mints. Two token-issuing paths exist in the same spec, and a third, federated path
+    is visible in the app's public runtime config.
+schemes:
+- name: Authorization
+  type: apiKey
+  in: header
+  parameter: Authorization
+  applied: global
+  operations: 39
+  sources:
+  - openapi/delos-wellcube-cloud-be-openapi.yml
+token_issuance:
+- flow: password
+  name: Full session
+  operation: sessionCreate
+  endpoint: POST https://cloud.wellcube.io/api/v1/sessions
+  credentials: [email, password, product]
+  returns: jwt
+  note: >-
+    The spec's own response description for this operation reads "Deprecated create session response"
+    — the provider is signalling that the response envelope of its primary login operation is
+    deprecated, while shipping no replacement operation and no deprecation date. See
+    lifecycle/delos-lifecycle.yml.
+- flow: password-limited
+  name: Limited session
+  operation: limitedSessionCreate
+  endpoint: POST https://cloud.wellcube.io/api/v1/limited-sessions
+  returns: {accessToken: string, refreshToken: string}
+  schema: AccessData
+  refresh_operation: limitedSessionRefresh
+  refresh_endpoint: POST https://cloud.wellcube.io/api/v1/limited-sessions/refresh
+  note: >-
+    The newer of the two paths — issues a proper access/refresh pair (components.schemas.AccessData)
+    instead of a bare `jwt`, and is the only operation with an explicit refresh counterpart.
+- flow: federated
+  name: Cognito session exchange (admin)
+  operations: [adminUserCognitoSessionCreate, adminUserLimitedCognitoSessionCreate]
+  endpoints:
+  - POST https://cloud.wellcube.io/api/v1/admin/users/cognito-sessions
+  - POST https://cloud.wellcube.io/api/v1/admin/users/limited-cognito-sessions
+  note: Exchanges an AWS Cognito identity for a Cloud BE session. Admin-scoped.
+identity_provider:
+  vendor: AWS Cognito
+  user_pool_id: us-east-1_QNxQ6AqaQ
+  region: us-east-1
+  issuer: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ
+  discovery: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ/.well-known/openid-configuration
+  discovery_status: 200
+  jwks_uri: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ/.well-known/jwks.json
+  scopes_supported: [openid, email, phone, profile]
+  id_token_signing_alg_values_supported: [RS256]
+  source: >-
+    https://app.wellcube.io/config.js — the WellCube web application's public runtime configuration,
+    which names the user pool. The discovery document itself is served by AWS, not by Delos.
+  note: >-
+    The Cognito pool advertises only the four standard OIDC scopes. There is no resource server, no
+    custom scope namespace, and no scope-to-permission mapping anywhere in the OpenAPI — authorization
+    in the Cloud BE API is role/ownership-based (`x-permission-denied` appears on 28 of 39 operations)
+    rather than scope-based. That is why no scopes/ artifact is emitted for this provider.
+gaps:
+- The OpenAPI never documents the token format, lifetime, or refresh semantics of the `Authorization` header value.
+- No `bearerFormat`, no `description` on the security scheme.
+- Local-account operations accept installation credentials (localAccountLink/Share/Transfer return
+  `x-wrong-credentials`), a second credential domain the spec does not describe.
+- No published rotation, revocation, or key-management policy for API consumers.

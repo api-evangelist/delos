@@ -1,0 +1,88 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Delos WellCube Cloud BE API
+  version: 1.0.0
+extends: openapi/delos-wellcube-cloud-be-openapi.yml
+x-generated: '2026-08-12'
+x-method: generated
+x-source: >-
+  Derived from https://cloud.wellcube.io/api/v1/docs/ (swagger-ui-init.js) plus live probes of
+  https://cloud.wellcube.io/api/v1. This overlay records API Evangelist annotations only; the
+  harvested document at openapi/_original/ is never mutated.
+actions:
+  - target: $.info
+    description: Provenance and provider identity.
+    update:
+      x-apievangelist-provider: delos
+      x-apievangelist-harvested: '2026-08-12'
+      x-apievangelist-source: https://cloud.wellcube.io/api/v1/docs/
+      x-apievangelist-discovery: >-
+        Not linked from any Delos marketing page. Found by reading the public runtime config at
+        https://app.wellcube.io/config.js, which names cloudBackendHttpUrl
+        https://cloud.wellcube.io/api/v1, then probing that host for a docs surface.
+      description: >-
+        REST API behind the Delos WellCube / Darwin Cloud platform. Manages sessions, user product
+        entitlements and invitations, installations and products with statistics, AWS product bundles,
+        asynchronous device/system actions, and local-account linking, sharing, transfer and migration
+        to federated AWS Cognito identity.
+      contact:
+        name: Delos Living LLC
+        url: https://delos.com/
+  - target: $.info
+    description: >-
+      Flag the contract defects a consumer must know about before generating a client. All three are
+      verified — the first two from the document itself, the third from live requests.
+    update:
+      x-apievangelist-caveats:
+        - id: non-http-response-keys
+          detail: >-
+            No operation declares an HTTP status code. All 19 failure responses use non-standard
+            x--prefixed response-map keys, which OpenAPI 3.0 does not permit. Code generators, mock
+            servers and contract tests will produce nothing useful for the error paths.
+        - id: always-200
+          detail: >-
+            Verified live on 2026-08-12: GET /products without a token and POST /sessions with invalid
+            credentials both returned HTTP 200 with a failure body. body.status (1 ok / 0 error) is the
+            only outcome signal.
+        - id: undocumented-error-code
+          detail: >-
+            The live API returns error code FORMAT_ERROR for a missing token, and an error.message
+            field, neither of which appears in the published contract.
+  - target: $.servers
+    description: Confirm the production base URL is reachable and correct as published.
+    update:
+      - url: https://cloud.wellcube.io/api/v1
+        description: Production. Verified reachable 2026-08-12.
+  - target: $.components.securitySchemes.Authorization
+    description: >-
+      The security scheme is declared with no description. Document what the header value actually is
+      and where it comes from, without changing its type.
+    update:
+      description: >-
+        Session token minted by this API. Obtain it from POST /sessions (returns a bare `jwt`, whose
+        response envelope the spec itself marks deprecated) or from POST /limited-sessions (returns an
+        AccessData accessToken/refreshToken pair, refreshable via POST /limited-sessions/refresh).
+        Admin callers may exchange an AWS Cognito identity via POST /admin/users/cognito-sessions.
+        Token format, lifetime and revocation are not documented by the provider.
+      x-apievangelist-idp: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ
+  - target: $.paths['/sessions'].post
+    description: Surface the deprecation signal the provider buried in a response description.
+    update:
+      x-apievangelist-deprecation-note: >-
+        The provider labels this operation's response envelope "Deprecated create session response"
+        but does not set `deprecated: true`, give a sunset date, or name a successor. The apparent
+        replacement is limitedSessionCreate, which returns a typed AccessData token pair.
+  - target: $.paths['/global/execute-nva'].post
+    description: Mark the highest-consequence operation in the surface for agent governance.
+    update:
+      x-apievangelist-consequence: physical
+      x-apievangelist-note: >-
+        Dispatches a command to equipment on a live installation and returns a job id for polling via
+        globalJobsShow / globalJobsGetResults. No idempotency key exists anywhere in this API, so a
+        retried dispatch is a second dispatch.
+  - target: $.components.parameters.limit
+    description: The pagination parameters carry no bounds or defaults; record that as a known gap.
+    update:
+      x-apievangelist-note: >-
+        No default, minimum or maximum is declared, and no response field reports a total count or a
+        next cursor, so a client cannot detect the end of a collection without over-fetching.

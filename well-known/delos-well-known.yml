@@ -1,0 +1,73 @@
+generated: '2026-08-12'
+method: probed
+source: live GET of /.well-known/* on every Delos host in apis.yml and every OpenAPI servers[] host
+result: no-hits
+summary: >-
+  Every /.well-known/ path was probed on all four Delos hosts. Not one returned a real document.
+  delos.com and wellcube.io return honest 404s. cloud.wellcube.io and app.wellcube.io return HTTP 200
+  for every path, but the body is the single-page-app HTML shell (title "Darwin Cloud" / "WellCube"),
+  not a document — a soft-200 catch-all, recorded here as a MISS. No WellKnown pointer and no
+  SecurityTxt pointer are emitted in apis.yml, because the provider serves neither surface.
+hosts:
+- host: https://delos.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://wellcube.io
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://cloud.wellcube.io
+  note: >-
+    SPA catch-all. Every path below returns 200 with content-type text/html and the same 611-byte
+    "Darwin Cloud" shell. Treated as a miss, not a hit.
+  documents:
+  - {path: /.well-known/security.txt, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/openid-configuration, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/oauth-authorization-server, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/oauth-protected-resource, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/api-catalog, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/ai-plugin.json, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/agent-card.json, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/agent.json, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /llms.txt, status: 200, content_type: text/html, document: false, reason: spa-shell}
+- host: https://app.wellcube.io
+  note: SPA catch-all, same shape as cloud.wellcube.io. All misses.
+  documents:
+  - {path: /.well-known/security.txt, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/openid-configuration, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/oauth-authorization-server, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/api-catalog, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/agent-card.json, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /.well-known/agent.json, status: 200, content_type: text/html, document: false, reason: spa-shell}
+  - {path: /llms.txt, status: 200, content_type: text/html, document: false, reason: spa-shell}
+off_host_discovery:
+- description: >-
+    A real OIDC discovery document exists for the WellCube identity provider, but it is served by AWS,
+    not by Delos. The WellCube web app federates to an Amazon Cognito user pool whose ID is published
+    in the app's own public runtime config at https://app.wellcube.io/config.js. The discovery document
+    below is therefore genuine and anonymous-readable, but it is an AWS-hosted artifact — it does NOT
+    make Delos a provider of a /.well-known/ surface, so it earns no WellKnown pointer.
+  url: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ/.well-known/openid-configuration
+  status: 200
+  issuer: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ
+  jwks_uri: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_QNxQ6AqaQ/.well-known/jwks.json
+  jwks_status: 200
+  scopes_supported: [openid, email, phone, profile]
+  response_types_supported: [code, token]
+  id_token_signing_alg_values_supported: [RS256]
+  file: delos-cognito-openid-configuration.json

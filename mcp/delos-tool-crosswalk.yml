@@ -1,0 +1,273 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/delos-wellcube-cloud-be-openapi.yml + mcp/delos-mcp.yml
+note: 'Delos publishes no MCP server and no GraphQL endpoint, so this crosswalk binds the CANDIDATE tool set in
+  mcp/delos-mcp.yml back to the REST operations it was derived from. The binding is 1:1 and therefore high confidence
+  by construction: each candidate tool inherits its real inputSchema from that operation''s parameters and requestBody
+  in the OpenAPI. There are no mcp_only rows, because there is no MCP server to diverge from REST, and no rest_only
+  rows, because every operation was mapped. If Delos later ships a real MCP server, this file must be re-derived
+  against its tools/list output and the confidences re-scored.'
+surfaces:
+  openapi:
+    path: openapi/delos-wellcube-cloud-be-openapi.yml
+    url: https://cloud.wellcube.io/api/v1/docs/
+    gated: false
+    note: Spec is public and anonymous-readable; every operation it describes requires a token to call.
+  graphql:
+    endpoint: null
+    note: No GraphQL surface found on any Delos host.
+  mcp:
+    url: null
+    gated: null
+    note: No MCP server published. Tools below are candidates.
+  websocket:
+    endpoint: wss://ugw.wellcube.io/clients-socket
+    note: A real-time gateway named in the WellCube app public runtime config. Not described by any published
+      contract, so it is recorded but not crosswalked. See asyncapi/delos-events.yml.
+crosswalk:
+- tool: session_create
+  category: sessions
+  rest:
+  - sessionCreate
+  binding: rest
+  confidence: high
+- tool: session_validate
+  category: sessions
+  rest:
+  - sessionValidate
+  binding: rest
+  confidence: high
+- tool: limited_session_create
+  category: sessions
+  rest:
+  - limitedSessionCreate
+  binding: rest
+  confidence: high
+- tool: limited_session_refresh
+  category: sessions
+  rest:
+  - limitedSessionRefresh
+  binding: rest
+  confidence: high
+- tool: user_products_list
+  category: users
+  rest:
+  - userProductsList
+  binding: rest
+  confidence: high
+- tool: user_product_invitation_create
+  category: users
+  rest:
+  - userProductInvitationCreate
+  binding: rest
+  confidence: high
+- tool: user_product_invitation_show
+  category: users
+  rest:
+  - userProductInvitationShow
+  binding: rest
+  confidence: high
+- tool: user_product_invitation_confirm
+  category: users
+  rest:
+  - userProductInvitationConfirm
+  binding: rest
+  confidence: high
+- tool: user_product_invitation_revoke
+  category: users
+  rest:
+  - userProductInvitationRevoke
+  binding: rest
+  confidence: high
+- tool: user_product_invitation_renew
+  category: users
+  rest:
+  - userProductInvitationRenew
+  binding: rest
+  confidence: high
+- tool: admin_user_cognito_session_create
+  category: admin/users
+  rest:
+  - adminUserCognitoSessionCreate
+  binding: rest
+  confidence: high
+- tool: admin_user_limited_cognito_session_create
+  category: admin/users
+  rest:
+  - adminUserLimitedCognitoSessionCreate
+  binding: rest
+  confidence: high
+- tool: admin_user_products_list
+  category: admin/users
+  rest:
+  - adminUserProductsList
+  binding: rest
+  confidence: high
+- tool: admin_user_products_create
+  category: admin/users
+  rest:
+  - adminUserProductsCreate
+  binding: rest
+  confidence: high
+- tool: admin_user_products_update
+  category: admin/users
+  rest:
+  - adminUserProductsUpdate
+  binding: rest
+  confidence: high
+- tool: admin_user_products_delete
+  category: admin/users
+  rest:
+  - adminUserProductsDelete
+  binding: rest
+  confidence: high
+- tool: admin_installations_list
+  category: admin/installations
+  rest:
+  - adminInstallationsList
+  binding: rest
+  confidence: high
+- tool: admin_installations_list_associated_products
+  category: admin/installations
+  rest:
+  - adminInstallationsListAssociatedProducts
+  binding: rest
+  confidence: high
+- tool: admin_installation_stats
+  category: admin/installations
+  rest:
+  - adminInstallationStats
+  binding: rest
+  confidence: high
+- tool: admin_product_list
+  category: admin/products
+  rest:
+  - adminProductList
+  binding: rest
+  confidence: high
+- tool: admin_product_create
+  category: admin/products
+  rest:
+  - adminProductCreate
+  binding: rest
+  confidence: high
+- tool: admin_product_stats
+  category: admin/products
+  rest:
+  - adminProductStats
+  binding: rest
+  confidence: high
+- tool: admin_product_show
+  category: admin/products
+  rest:
+  - adminProductShow
+  binding: rest
+  confidence: high
+- tool: admin_product_update
+  category: admin/products
+  rest:
+  - adminProductUpdate
+  binding: rest
+  confidence: high
+- tool: admin_product_delete
+  category: admin/products
+  rest:
+  - adminProductDelete
+  binding: rest
+  confidence: high
+- tool: admin_products_bundles_a_w_s_list
+  category: admin/products-bundles
+  rest:
+  - adminProductsBundlesAWSList
+  binding: rest
+  confidence: high
+- tool: action_submit
+  category: actions
+  rest:
+  - actionSubmit
+  binding: rest
+  confidence: high
+- tool: action_show
+  category: actions
+  rest:
+  - actionShow
+  binding: rest
+  confidence: high
+- tool: product_list
+  category: products
+  rest:
+  - productList
+  binding: rest
+  confidence: high
+- tool: installations_list
+  category: installations
+  rest:
+  - installationsList
+  binding: rest
+  confidence: high
+- tool: local_account_link
+  category: local-accounts
+  rest:
+  - localAccountLink
+  binding: rest
+  confidence: high
+- tool: local_account_share
+  category: local-accounts
+  rest:
+  - localAccountShare
+  binding: rest
+  confidence: high
+- tool: local_account_transfer
+  category: local-accounts
+  rest:
+  - localAccountTransfer
+  binding: rest
+  confidence: high
+- tool: local_account_update
+  category: local-accounts
+  rest:
+  - localAccountUpdate
+  binding: rest
+  confidence: high
+- tool: local_account_set_global
+  category: local-accounts
+  rest:
+  - localAccountSetGlobal
+  binding: rest
+  confidence: high
+- tool: local_account_migrate_to_federated
+  category: local-accounts
+  rest:
+  - localAccountMigrateToFederated
+  binding: rest
+  confidence: high
+- tool: global_execute_n_v_a
+  category: global
+  rest:
+  - globalExecuteNVA
+  binding: rest
+  confidence: high
+- tool: global_jobs_show
+  category: global
+  rest:
+  - globalJobsShow
+  binding: rest
+  confidence: high
+- tool: global_jobs_get_results
+  category: global
+  rest:
+  - globalJobsGetResults
+  binding: rest
+  confidence: high
+mcp_only: []
+rest_only: []
+coverage:
+  tools_named: 39
+  tools_bound: 39
+  mcp_only: 0
+  rest_ops_total: 39
+  rest_ops_with_tool: 39
+  binding_confidence:
+    high: 39
+    medium: 0
+    low: 0

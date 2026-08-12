@@ -42,5 +42,41 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Delos is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.hiive.com/securities/delos-stock
+Delos Living LLC is a New York-based wellness real estate and technology company. It founded the WELL
+Building Standard and co-founded the Well Living Lab with Mayo Clinic, and its connected product line —
+WellCube — pairs localized air purifiers with multi-sensor devices for commercial offices.
+
+## The API surface
+
+Delos does not advertise a developer program, and there is no `/developers` or `/api` page on either
+`delos.com` or `wellcube.io`. A real, publicly readable **OpenAPI 3.0.0 contract** does exist:
+
+- **WellCube Cloud BE API** — <https://cloud.wellcube.io/api/v1> — 33 paths, 39 operations, served
+  through a live Swagger UI at <https://cloud.wellcube.io/api/v1/docs/>.
+
+It was found by reading <https://app.wellcube.io/config.js>, the WellCube web application's public
+runtime configuration, which names the backend host. Nothing here required credentials.
+
+Three properties of that contract are worth stating up front, because they change how it must be
+consumed and all three were verified rather than assumed:
+
+1. **Every response is HTTP 200, including failures** — confirmed live on 2026-08-12. `body.status`
+   (`1` success / `0` failure) is the only outcome signal the API emits.
+2. **The document declares no HTTP status codes at all.** All 19 failure responses use non-standard
+   `x-`-prefixed response-map keys, which OpenAPI 3.0 does not permit. The usable error identity is
+   one level down, in 14 reusable components with pinned `error.code` strings.
+3. **There is no idempotency key**, on any of the 18 write operations, and no rate-limit headers are
+   returned.
+
+Delos publishes no client SDK, no changelog, no status page, no pricing, no `/.well-known/` document
+and no event contract — though a live WebSocket gateway (`wss://ugw.wellcube.io/clients-socket`) is
+running behind the product. Each of those absences is recorded with its probe evidence in the
+corresponding artifact directory.
+
+### Links
+
+- <https://delos.com/> — company
+- <https://wellcube.io/> — WellCube product
+- <https://cloud.wellcube.io/api/v1/docs/> — the entire developer surface
+- <https://github.com/Delos-tech> — GitHub organization ("Delos Living")
+- <https://www.hiive.com/securities/delos-stock> — secondary-market listing that surfaced this company

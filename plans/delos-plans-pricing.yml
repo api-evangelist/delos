@@ -1,0 +1,37 @@
+generated: '2026-08-12'
+method: searched
+source: https://wellcube.io/platform
+docs: https://wellcube.io/contact
+plan_count: 0
+pricing_model: contact-sales
+self_serve: false
+public_pricing: false
+free_tier: false
+trial: false
+evidence:
+- {url: 'https://wellcube.io/pricing', status: 404}
+- {url: 'https://delos.com/pricing/', status: 404}
+- {url: 'https://wellcube.io/platform', status: 200}
+- {url: 'https://wellcube.io/contact', status: 200}
+- {url: 'https://cloud.wellcube.io/api/v1/docs/', status: 200}
+plans: []
+note: >-
+  Delos publishes no pricing for WellCube or for the Cloud BE API — plan_count is a real zero, not a
+  gap in this pass. There is no /pricing page on either wellcube.io or delos.com (both 404), no plan
+  table, no rate card and no self-serve signup. The published buying motion is entirely sales-led: the
+  platform page routes to "BOOK A DEMO" and "CONTACT US", and the documented onboarding sequence is
+  (1) share project details, (2) work with a WellCube technical sales manager on system design,
+  (3) white-glove installation by a certified on-site installer using the WellCube Integrator app,
+  (4) scale across the portfolio. API access is not sold or metered as a separate product on any
+  public page; the platform page's API section says only "Looking for a specific integration? Reach
+  out to us". Delos also sells hardware direct to consumers at shop.delos.com, but that storefront
+  covers air purifiers and filters, not platform or API access.
+api_access:
+  sold_separately: false
+  metered: false
+  signup: none published
+  note: >-
+    The Cloud BE API at https://cloud.wellcube.io/api/v1 is reachable and its OpenAPI is public, but
+    every operation requires an Authorization token and the only credential path is a WellCube account
+    (app.wellcube.io/login), which is issued through the sales/installation process. There is no
+    developer signup, no API key self-service, and no published tier.

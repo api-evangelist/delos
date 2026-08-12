@@ -1,0 +1,48 @@
+generated: '2026-08-12'
+method: probed
+result: no-contract
+spec_type: null
+asyncapi_published: false
+webhooks_published: false
+pointer_emitted: false
+pointer_note: >-
+  Neither an `AsyncAPI` nor a `Webhooks` pointer is wired into apis.yml. An event surface demonstrably
+  EXISTS — a live WebSocket gateway — but Delos publishes no contract, no event catalogue, no webhook
+  reference and no subscription documentation for it. The scoring pointers assert that a provider
+  publishes an event surface; this provider operates one without publishing it, which is a different
+  fact and is recorded here rather than credited there.
+event_surface:
+  transport: websocket
+  endpoint: wss://ugw.wellcube.io/clients-socket
+  source: >-
+    https://app.wellcube.io/config.js — the WellCube web application's public runtime configuration,
+    key `internetUgwWsUrl`. "ugw" is the WellCube universal/unified gateway; the WellCube platform
+    page describes devices communicating over a wireless mesh through a System Gateway into the cloud.
+  evidence:
+  - {url: 'https://app.wellcube.io/config.js', status: 200, finding: 'names internetUgwWsUrl wss://ugw.wellcube.io/clients-socket'}
+  - {url: 'https://ugw.wellcube.io/clients-socket', status: 404, finding: 'host is live (x-powered-by: Express) and answers over HTTPS; the path returns 404 to a plain GET, consistent with a WebSocket-upgrade-only endpoint'}
+  documented: false
+  message_schemas: none published
+  channels: none published
+  bindings: none published
+  security: not documented
+probes:
+- {url: 'https://cloud.wellcube.io/asyncapi.yaml', status: 200, document: false, reason: 'SPA shell (611-byte "Darwin Cloud" HTML), not a document'}
+- {url: 'https://cloud.wellcube.io/asyncapi.json', status: 200, document: false, reason: spa-shell}
+- {url: 'https://wellcube.io/asyncapi.yaml', status: 404}
+- {url: 'https://cloud.wellcube.io/api/v1/docs/', status: 200, finding: 'OpenAPI 3.0.0 with 39 operations; declares no webhooks, no callbacks, and no `webhooks` root object'}
+- {url: 'https://api.github.com/orgs/Delos-tech/repos', status: 200, finding: '2 public repos, both JSON-RPC-over-MQTT transport forks; no event contract published'}
+github_signal:
+  note: >-
+    The only two public repositories on the Delos-tech GitHub organization are `node-mole-rpc`
+    (transport-agnostic JSON-RPC client/server) and `node-mole-rpc-transport-mqtt` (MQTT transport for
+    it), both last pushed 2025-01-29. That is a strong hint that MQTT/JSON-RPC carries device
+    messaging inside the WellCube estate, but it is a hint about internal plumbing, not a published
+    consumer event contract, and is not treated as one.
+assessment: >-
+  Real-time messaging is central to how WellCube works — the product page sells continuous IEQ
+  monitoring and automated purifier remediation over a wireless mesh — yet none of it is described by
+  a machine-readable contract. There is no AsyncAPI, no webhook catalogue, and no way for an
+  integrator to subscribe to WellCube events without a bilateral conversation. This is the clearest
+  single gap in the Delos API surface, and it is a gap the provider can close: publishing an AsyncAPI
+  for the existing ugw channel would require documenting a system they already run.

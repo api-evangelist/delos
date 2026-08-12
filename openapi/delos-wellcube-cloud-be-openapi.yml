@@ -1,0 +1,2699 @@
+openapi: 3.0.0
+info:
+  version: 11.13.9
+  title: Cloud BE
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+paths:
+  /sessions:
+    post:
+      summary: 'Session: Create'
+      operationId: sessionCreate
+      tags:
+      - sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - email
+                  - password
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      format: password
+                    product:
+                      type: string
+              example:
+                data:
+                  email: admin@admin.admin
+                  password: mypass1
+      responses:
+        default:
+          description: Deprecated create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    required:
+                    - jwt
+                    properties:
+                      jwt:
+                        type: string
+                      wasProductAdded:
+                        type: boolean
+                        example: false
+        x-authentification-failed:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: AUTHENTICATION_FAILED
+                      fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: INVALID
+                          password:
+                            type: string
+                            example: INVALID
+                          status:
+                            type: string
+                            example: NOT_ACTIVE_USER
+                    examples:
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        email: INVALID
+                        password: INVALID
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        status: NOT_ACTIVE_USER
+  /sessions/validate:
+    get:
+      summary: Validate auth token
+      operationId: sessionValidate
+      tags:
+      - sessions
+      responses:
+        default:
+          description: Token valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+                        example: ACTIVE
+                      role:
+                        type: string
+                        example: USER
+        x-wrong-token:
+          summary: Wrong token in headers
+          $ref: '#/components/responses/WrongTokenError'
+        x-user-not-valid-token:
+          summary: User coded in token is not valid
+          $ref: '#/components/responses/UserNotValidTokenError'
+        x-user-not-active-token:
+          summary: User coded in token is not active
+          $ref: '#/components/responses/UserNotActiveTokenError'
+  /limited-sessions:
+    post:
+      summary: 'Session: Create Limited'
+      operationId: limitedSessionCreate
+      tags:
+      - sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - email
+                  - password
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      format: password
+                    product:
+                      type: string
+              example:
+                data:
+                  email: admin@admin.admin
+                  password: mypass1
+      responses:
+        default:
+          description: Common create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-authentification-failed:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: AUTHENTICATION_FAILED
+                      fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: INVALID
+                          password:
+                            type: string
+                            example: INVALID
+                          status:
+                            type: string
+                            example: NOT_ACTIVE_USER
+                    examples:
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        email: INVALID
+                        password: INVALID
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        status: NOT_ACTIVE_USER
+  /limited-sessions/refresh:
+    post:
+      summary: 'Session: Refresh Limited'
+      operationId: limitedSessionRefresh
+      tags:
+      - sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - refreshToken
+                  properties:
+                    refreshToken:
+                      type: string
+      responses:
+        default:
+          description: Common create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-authentification-failed:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: AUTHENTICATION_FAILED
+                      fields:
+                        type: object
+                        properties:
+                          refreshToken:
+                            type: string
+                            example: EXPIRED
+                          status:
+                            type: string
+                            example: NOT_ACTIVE_USER
+                    examples:
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        refreshToken: EXPIRED
+  /users/{userId}/products:
+    get:
+      summary: 'Users: List associated products with bundles'
+      operationId: userProductsList
+      tags:
+      - users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Common associated products list response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        x-permission-denied:
+          summary: List associated products for another user than auth token
+          $ref: '#/components/responses/PermissionDeniedError'
+  /users/product-invitations:
+    post:
+      summary: 'Users: Product Invitation Create'
+      operationId: userProductInvitationCreate
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - email
+                  - product
+                  properties:
+                    email:
+                      type: string
+                    emailTemplate:
+                      type: object
+                      properties:
+                        bucket:
+                          type: string
+                        key:
+                          type: string
+                        sender:
+                          type: string
+                        subject:
+                          type: string
+                        params:
+                          type: object
+                    product:
+                      type: string
+                    localState:
+                      type: object
+                    localGroups:
+                      type: array
+                      items:
+                        type: string
+                    expirationTime:
+                      type: integer
+                      description: Time to expire in seconds, default 2 days
+                      default: 172800
+      responses:
+        default:
+          description: Created product invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/ProductInvitation'
+        x-permission-denied:
+          summary: Create invitation with no access to product installation
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-product-not-exists:
+          summary: Product to create invitation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-unique:
+          summary: User data to invite is not unique
+          $ref: '#/components/responses/NotUniqueError'
+  /users/product-invitations/{invitationId}:
+    get:
+      summary: 'Users: Product Invitation Show'
+      operationId: userProductInvitationShow
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Product invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/ProductInvitation'
+        x-action-not-exists:
+          summary: Invite action not exists
+          $ref: '#/components/responses/NotExistsError'
+  /users/product-invitations/{invitationId}/confirm:
+    post:
+      summary: 'Users: Product Invitation Confirm'
+      operationId: userProductInvitationConfirm
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - cognitoUserId
+                  - firstName
+                  - secondName
+                  properties:
+                    cognitoUserId:
+                      type: string
+                    firstName:
+                      type: string
+                    secondName:
+                      type: string
+                    company:
+                      type: string
+                    phone:
+                      type: string
+      responses:
+        default:
+          description: Access data for confirmed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-action-expired:
+          $ref: '#/components/responses/ExpiredError'
+        x-action-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-product-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /users/product-invitations/{invitationId}/revoke:
+    post:
+      summary: 'Users: Product Invitation Revoke'
+      operationId: userProductInvitationRevoke
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Success status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: boolean
+                    example: true
+        x-action-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-product-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /users/product-invitations/{invitationId}/renew:
+    post:
+      summary: 'Users: Product Invitation Renew'
+      operationId: userProductInvitationRenew
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    expirationTime:
+                      type: integer
+                      description: Time to expire in seconds, default 2 days
+                      default: 172800
+      responses:
+        default:
+          description: Updated product invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/ProductInvitation'
+        x-action-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-product-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/users/cognito-sessions:
+    post:
+      summary: 'Users: Cognito Session Create'
+      operationId: adminUserCognitoSessionCreate
+      tags:
+      - admin/users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - cognitoUserId
+                  properties:
+                    cognitoUserId:
+                      type: string
+      responses:
+        default:
+          description: Deprecated create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    required:
+                    - jwt
+                    properties:
+                      jwt:
+                        type: string
+        x-permission-denied:
+          summary: Create session for cognito user with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-auth-failed:
+          summary: Auth failed because of invalid cognito user data
+          $ref: '#/components/responses/AuthFailedError'
+  /admin/users/limited-cognito-sessions:
+    post:
+      summary: 'Users: Limited Cognito Session Create'
+      operationId: adminUserLimitedCognitoSessionCreate
+      tags:
+      - admin/users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - cognitoUserId
+                  properties:
+                    cognitoUserId:
+                      type: string
+      responses:
+        default:
+          description: Common create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-permission-denied:
+          summary: Create session for cognito user with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-auth-failed:
+          summary: Auth failed because of invalid cognito user data
+          $ref: '#/components/responses/AuthFailedError'
+  /admin/users/{userId}/products:
+    get:
+      summary: 'Users: List associated products with bundles'
+      operationId: adminUserProductsList
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Common associated products list response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        x-not-exists:
+          summary: List associated products for non-existing user
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: List user associated products with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/users/{userId}/products/{productId}:
+    post:
+      summary: 'Users: Create association with product'
+      operationId: adminUserProductsCreate
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    productBundlesIds:
+                      type: array
+                      items:
+                        type: string
+      responses:
+        default:
+          description: Common associated product response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-not-exists:
+          summary: Create associated products for non-existing user or product
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: Create user-to-product association with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    put:
+      summary: 'Users: Update association with product'
+      operationId: adminUserProductsUpdate
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    productBundlesIds:
+                      type: array
+                      items:
+                        type: string
+      responses:
+        default:
+          description: Common associated product response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-action-not-allowed:
+          summary: Update user-to-product association for not associated product
+          $ref: '#/components/responses/ActionNotAllowedError'
+        x-not-exists:
+          summary: Update associated products for non-existing user
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: Update user-to-product association with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    delete:
+      summary: 'Users: Delete association with product'
+      operationId: adminUserProductsDelete
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: string
+      responses:
+        default:
+          description: Common action success response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+        x-permission-denied:
+          summary: Delete user-to-product association with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/installations:
+    get:
+      summary: 'Installation: List'
+      operationId: adminInstallationsList
+      tags:
+      - admin/installations
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - localUserName
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: search
+        in: query
+        description: Installation id or name
+        schema:
+          type: string
+      - name: connected
+        in: query
+        description: Connectivity status
+        schema:
+          type: boolean
+      - name: tags
+        in: query
+        description: List of installations tags
+        schema:
+          type: array
+          items:
+            type: string
+      - name: productName
+        in: query
+        description: Associated product name
+        schema:
+          type: string
+      - name: userId
+        in: query
+        description: Local user id
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: List of installations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+        x-permission-denied:
+          summary: List installations with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/installations/{installationId}/products:
+    get:
+      summary: 'Installation: List Products associations'
+      operationId: adminInstallationsListAssociatedProducts
+      tags:
+      - admin/installations
+      parameters:
+      - name: installationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: List of associated Propducts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+        x-permission-denied:
+          summary: List of associated Propducts with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/installations/{installationId}/stats:
+    get:
+      summary: 'Installation: Stats'
+      operationId: adminInstallationStats
+      tags:
+      - admin/installations
+      parameters:
+      - name: installationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Installation Stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      localAccountsCount:
+                        type: integer
+                      cloudUsersCount:
+                        type: integer
+                      productsCount:
+                        type: integer
+                      primaryProductsCount:
+                        type: integer
+        x-wrong-id:
+          summary: Show Installation Stats with non-existing installationId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Show Installation Stats with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/products:
+    get:
+      summary: 'Product: List'
+      operationId: adminProductList
+      tags:
+      - admin/products
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - localUserName
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: resources
+        in: query
+        schema:
+          type: string
+      - name: isOpenRegistration
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: List Products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        x-permission-denied:
+          summary: List Products with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    post:
+      summary: 'Product: Create'
+      operationId: adminProductCreate
+      tags:
+      - admin/products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - name
+                  - primaryInstallationId
+                  properties:
+                    name:
+                      type: string
+                    primaryInstallationId:
+                      type: string
+                      format: uuid
+                    details:
+                      type: string
+                    resources:
+                      type: string
+                    isOpenRegistration:
+                      type: boolean
+                    canAssociateInstallation:
+                      type: boolean
+                    bundlesNames:
+                      type: array
+                      items:
+                        type: string
+                    primaryBundle:
+                      type: string
+      responses:
+        default:
+          description: Create Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-not-unique:
+          summary: Create Product with existing name
+          description: not-unique
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_UNIQUE
+                      fields:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: NOT_UNIQUE
+        x-permission-denied:
+          summary: Create Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/products/{productId}/stats:
+    get:
+      summary: 'Product: Stats'
+      operationId: adminProductStats
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Product Stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      cloudUsersCount:
+                        type: integer
+                      productBundlesCount:
+                        type: integer
+                      installationsCount:
+                        type: integer
+                      plansCount:
+                        type: integer
+                      redeemCodesCount:
+                        type: integer
+        x-wrong-id:
+          summary: Show Product Stats with non-existing productId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Show Product Stats with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/products/{productId}:
+    get:
+      summary: 'Product: Show'
+      operationId: adminProductShow
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-wrong-id:
+          summary: Show Product with non-existing productId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Show Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    put:
+      summary: 'Product: Update'
+      operationId: adminProductUpdate
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    primaryInstallationId:
+                      type: string
+                      format: uuid
+                    details:
+                      type: string
+                    resources:
+                      type: string
+                    isOpenRegistration:
+                      type: boolean
+                    canAssociateInstallation:
+                      type: boolean
+                    bundlesNames:
+                      type: array
+                      items:
+                        type: string
+                    primaryBundle:
+                      type: string
+      responses:
+        default:
+          description: Update Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-not-unique:
+          summary: Update Product with existing name
+          description: not-unique
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_UNIQUE
+                      fields:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: NOT_UNIQUE
+        x-permission-denied:
+          summary: Update Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    delete:
+      summary: 'Product: Delete'
+      operationId: adminProductDelete
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Delete Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+        x-wrong-id:
+          summary: Delete Product with non-existing productId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Delete Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/products-bundles/aws:
+    get:
+      summary: 'Product Bundle: List from AWS'
+      operationId: adminProductsBundlesAWSList
+      tags:
+      - admin/products-bundles
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: List Products Bundles from AWS
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      type: string
+        x-permission-denied:
+          summary: List Products Bundles from AWS with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /actions/{actionId}:
+    post:
+      summary: 'Action: Submit'
+      operationId: actionSubmit
+      tags:
+      - actions
+      parameters:
+      - name: actionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+      responses:
+        default:
+          description: Action-specific response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+      x-not-exists:
+        $ref: '#/components/responses/NotExistsError'
+      x-expired:
+        $ref: '#/components/responses/ExpiredError'
+    get:
+      summary: 'Action: Show'
+      operationId: actionShow
+      tags:
+      - actions
+      parameters:
+      - name: actionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Action
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Action'
+      x-not-exists:
+        $ref: '#/components/responses/NotExistsError'
+      x-expired:
+        $ref: '#/components/responses/ExpiredError'
+  /products:
+    get:
+      summary: 'Product: List'
+      operationId: productList
+      tags:
+      - products
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - name
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: Products List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+  /installations:
+    get:
+      summary: 'Installation: List'
+      operationId: installationsList
+      tags:
+      - installations
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - name
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: productId
+        in: query
+        description: Associated product id
+        schema:
+          type: string
+      - name: productIsPrimary
+        in: query
+        description: Associated product is primary
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: List of installations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+  /local-accounts/link:
+    post:
+      summary: 'Local Account: Link'
+      operationId: localAccountLink
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  - installationCredentials
+                  - localUser
+                  properties:
+                    installationId:
+                      type: string
+                    installationCredentials:
+                      type: object
+                      properties:
+                        manipulatorId:
+                          type: string
+                        accessToken:
+                          type: string
+                        login:
+                          type: string
+                        password:
+                          type: string
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Linked LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          summary: Installation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-already-exists:
+          summary: LocalAccount already exists
+          $ref: '#/components/responses/AlreadyExistsError'
+        x-wrong-credentials:
+          summary: Wrong installation credentials
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          summary: Unhandled Installation error
+          $ref: '#/components/responses/InstallationNvaError'
+  /local-accounts/share:
+    post:
+      summary: 'Local Account: Share'
+      operationId: localAccountShare
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  - email
+                  - localUser
+                  properties:
+                    installationId:
+                      type: string
+                    email:
+                      type: string
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Shared LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          summary: Installation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-already-exists:
+          summary: LocalAccount already exists
+          $ref: '#/components/responses/AlreadyExistsError'
+        x-action-not-allowed:
+          summary: Sharing to this user is not allowed
+          $ref: '#/components/responses/ActionNotAllowedError'
+        x-permission-denied:
+          summary: No access to installation
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-wrong-credentials:
+          summary: Wrong installation credentials
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          summary: Unhandled Installation error
+          $ref: '#/components/responses/InstallationNvaError'
+  /local-accounts/transfer:
+    post:
+      summary: 'Local Account: Transfer'
+      operationId: localAccountTransfer
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  - email
+                  - localUser
+                  properties:
+                    installationId:
+                      type: string
+                    email:
+                      type: string
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Transfered LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          summary: Installation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-already-exists:
+          summary: LocalAccount already exists
+          $ref: '#/components/responses/AlreadyExistsError'
+        x-action-not-allowed:
+          summary: Transfering to this user is not allowed
+          $ref: '#/components/responses/ActionNotAllowedError'
+        x-permission-denied:
+          summary: No access to installation
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-wrong-credentials:
+          summary: Wrong installation credentials
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          summary: Unhandled Installation error
+          $ref: '#/components/responses/InstallationNvaError'
+  /local-accounts/{localAccountId}:
+    put:
+      summary: 'Local Account: Update'
+      operationId: localAccountUpdate
+      tags:
+      - local-accounts
+      parameters:
+      - name: localAccountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - localUser
+                  properties:
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Updated LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/LocalAccount'
+                    - type: object
+                      properties:
+                        localUserUpdatesStatuses:
+                          type: object
+                          properties:
+                            name:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+                            password:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+                            groups:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+                            sites:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+        x-not-exists:
+          summary: Local account not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: No access to local account
+          $ref: '#/components/responses/PermissionDeniedError'
+  /local-accounts/{localAccountId}/set-global:
+    post:
+      summary: 'Local Account: Set Global'
+      operationId: localAccountSetGlobal
+      tags:
+      - local-accounts
+      parameters:
+      - name: localAccountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - isGlobal
+                  properties:
+                    isGlobal:
+                      type: boolean
+      responses:
+        default:
+          description: Updated LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          $ref: '#/components/responses/InstallationNvaError'
+  /admin/local-accounts/migrate-to-federated:
+    post:
+      summary: 'Local Account: Migrate to federated'
+      operationId: localAccountMigrateToFederated
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  properties:
+                    installationId:
+                      type: string
+      responses:
+        default:
+          description: Created Job id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: string
+                    example: uuid
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /global/execute-nva:
+    post:
+      summary: 'Global: ExecuteNVA'
+      operationId: globalExecuteNVA
+      tags:
+      - global
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - globalTag
+                  - nva
+                  properties:
+                    globalTag:
+                      type: string
+                    nva:
+                      type: object
+      responses:
+        default:
+          description: Created Job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-not-found:
+          $ref: '#/components/responses/NotFoundError'
+  /global/jobs/{jobId}:
+    get:
+      summary: 'Global: Jobs Show'
+      operationId: globalJobsShow
+      tags:
+      - global
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Requested Job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /global/jobs/{jobId}/results:
+    get:
+      summary: 'Global: Jobs Get Results'
+      operationId: globalJobsGetResults
+      tags:
+      - global
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: noun
+        in: query
+        schema:
+          type: string
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      responses:
+        default:
+          description: Requested Job Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        installationId:
+                          type: string
+                        installationName:
+                          type: string
+                        localAccountId:
+                          type: string
+                        localAccountName:
+                          type: string
+                        status:
+                          type: integer
+                          example: 1
+                        data:
+                          type: array
+                          items:
+                            type: object
+                        error:
+                          type: object
+                  meta:
+                    type: object
+                    properties:
+                      totalCount:
+                        type: integer
+                      filteredCount:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-action-not-allowed:
+          $ref: '#/components/responses/ActionNotAllowedError'
+components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    sortedBy:
+      name: sortedBy
+      in: query
+      schema:
+        type: string
+        enum:
+        - createdAt
+        - updatedAt
+        example: createdAt
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+  schemas:
+    AccessData:
+      type: object
+      required:
+      - accessToken
+      - refreshToken
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    Action:
+      type: object
+      required:
+      - id
+      - type
+      - data
+      - isExpired
+      - expiresAt
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        isExpired:
+          type: boolean
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    ProductInvitation:
+      type: object
+      required:
+      - id
+      - userId
+      - email
+      - productName
+      - invitedBy
+      - isExpired
+      - expiresAt
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+        productName:
+          type: string
+        invitedBy:
+          type: string
+          format: uuid
+        isExpired:
+          type: boolean
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+    Installation:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+          format: ipv4
+        ssid:
+          type: string
+        connected:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        localAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalAccount'
+        translators:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    LocalAccount:
+      type: object
+      required:
+      - id
+      - installationId
+      - cloudUserId
+      - localUserId
+      - localUserToken
+      - localUserGroups
+      - isPrimary
+      - isLegacy
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        cloudUserId:
+          type: string
+          format: uuid
+        localUserId:
+          type: string
+        localUserToken:
+          type: string
+        localUserSites:
+          type: object
+        localUserGroups:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        isPrimary:
+          type: boolean
+        isLegacy:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  responses:
+    AuthFailedError:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: AUTHENTICATION_FAILED
+                  fields:
+                    type: object
+    InstallationWrongCredentialsError:
+      description: Wrong credentials
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_WRONG_CREDENTIALS
+                  fields:
+                    type: object
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  fields:
+                    type: object
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    AlreadyExistsError:
+      description: Entity already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_EXISTS
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+    WrongIdError:
+      description: wrong-id
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_ID
+                  fields:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: WRONG_ID
+    NotUniqueError:
+      description: Entity data is not unique
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_UNIQUE
+                  fields:
+                    type: object
+    ExpiredError:
+      description: Entity has expired state
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: EXPIRED
+                  fields:
+                    type: object
+    InstallationNvaError:
+      description: Error occurred in Installation after sending nva
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_NVA_ERROR
+                  fields:
+                    type: object
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+    WrongTokenError:
+      description: Wrong token
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: WRONG_TOKEN
+    UserNotValidTokenError:
+      description: User coded in token is not valid
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: USER_NOT_VALID
+    UserNotActiveTokenError:
+      description: User coded in token is not active
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: USER_NOT_ACTIVE
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header
+security:
+- Authorization: []
+tags:
+- name: actions
+- name: admin/installations
+- name: admin/products
+- name: admin/products-bundles
+- name: admin/users
+- name: global
+- name: installations
+- name: local-accounts
+- name: products
+- name: sessions
+- name: users

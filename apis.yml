@@ -1,23 +1,137 @@
 aid: delos
 name: Delos
-description: 'Delos is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Delos Living LLC is a New York-based wellness real estate and technology company that applies building
+  science and evidence-based research to indoor environments across commercial, residential, hospitality,
+  education, senior living and transportation. Delos is the founder of the WELL Building Standard (now
+  administered by the International WELL Building Institute) and co-founder of the Well Living Lab with
+  Mayo Clinic. Its product line spans Intellipure advanced air purification, indoor environmental quality
+  (IEQ) sensing, the Stay Well hospitality program, and WellCube — a connected system of localized air
+  purifiers and multi-sensor devices for the modern office, backed by the "Cloud BE" / Darwin Cloud
+  platform that handles installations, products, device actions and account federation.
 url: https://raw.githubusercontent.com/api-evangelist/delos/refs/heads/main/apis.yml
+image: https://a-us.storyblok.com/f/1016757/200x62/8b73c5475d/logo_delos_layer_1.svg
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-08-12'
 modified: '2026-08-12'
 tags:
-- Company
-apis: []
+- wellness-real-estate
+- indoor-air-quality
+- indoor-environmental-quality
+- iot
+- smart-buildings
+- building-automation
+- air-purification
+- environmental-sensors
+- commercial-real-estate
+- healthy-buildings
+- hospitality
+- esg
+apis:
+- name: WellCube Cloud BE API
+  description: >-
+    REST API behind the WellCube / Darwin Cloud platform. Covers session and limited-session issuance,
+    user product entitlements and product invitations, installation and product administration with
+    per-installation and per-product statistics, AWS product bundles, device/system actions with
+    asynchronous job polling, and local-account linking, sharing, transfer and migration to federated
+    (AWS Cognito) identity. Served publicly as OpenAPI 3.0.0 through a Swagger UI at
+    https://cloud.wellcube.io/api/v1/docs/; all operations require an Authorization header token.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - iot
+  - smart-buildings
+  - indoor-air-quality
+  - device-management
+  - identity
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-wellcube-cloud-be-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: Overlay
+    url: overlays/delos-wellcube-cloud-be-overlay.yaml
+  - type: MCPServer
+    url: mcp/delos-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+common:
+- type: AgenticAccess
+  url: agentic-access/delos-agentic-access.yml
+- type: DomainSecurity
+  url: security/delos-domain-security.yml
+- type: Website
+  url: https://delos.com/
+- type: Website
+  url: https://wellcube.io/
+- type: Documentation
+  url: https://cloud.wellcube.io/api/v1/docs/
+- type: APIReference
+  url: https://cloud.wellcube.io/api/v1/docs/
+- type: Support
+  url: https://support.wellcube.io/hc/en-us
+- type: Blog
+  url: https://delos.com/blog/
+- type: GitHubOrganization
+  url: https://github.com/Delos-tech
+- type: Login
+  url: https://app.wellcube.io/login
+- type: TermsOfService
+  url: https://wellcube.io/terms-of-use
+- type: PrivacyPolicy
+  url: https://wellcube.io/privacy-policy
+- type: OpenAPI
+  url: openapi/delos-wellcube-cloud-be-openapi.yml
+- type: Authentication
+  url: authentication/delos-authentication.yml
+- type: Conventions
+  url: conventions/delos-conventions.yml
+- type: ErrorCatalog
+  url: errors/delos-error-codes.yml
+- type: DataModel
+  url: data-model/delos-data-model.yml
+- type: Conformance
+  url: conformance/delos-conformance.yml
+- type: Lifecycle
+  url: lifecycle/delos-lifecycle.yml
+- type: Packages
+  url: packages/delos-packages.yml
+- type: LLMsTxt
+  url: llms/delos-llms.txt
+- type: Overlay
+  url: overlays/delos-wellcube-cloud-be-overlay.yaml
+- type: MCPServer
+  url: mcp/delos-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/delos-tool-crosswalk.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/delos-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/delos-rate-limits.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-common:
-- type: Website
-  url: https://www.hiive.com/securities/delos-stock
+
+x-enrichment:
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v1
