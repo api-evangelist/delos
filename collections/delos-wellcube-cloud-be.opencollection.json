@@ -1,0 +1,949 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloud BE",
+    "version": "11.13.9"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "Authorization",
+      "value": "{{Authorization}}",
+      "placement": "header"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "sessions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Session: Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Session: Create"
+        },
+        {
+          "info": {
+            "name": "Validate auth token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/sessions/validate"
+          },
+          "docs": "Validate auth token"
+        },
+        {
+          "info": {
+            "name": "Session: Create Limited",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/limited-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Session: Create Limited"
+        },
+        {
+          "info": {
+            "name": "Session: Refresh Limited",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/limited-sessions/refresh",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Session: Refresh Limited"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Users: List associated products with bundles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/users/:userId/products",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Users: List associated products with bundles"
+        },
+        {
+          "info": {
+            "name": "Users: Product Invitation Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/users/product-invitations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Product Invitation Create"
+        },
+        {
+          "info": {
+            "name": "Users: Product Invitation Show",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/users/product-invitations/:invitationId",
+            "params": [
+              {
+                "name": "invitationId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Users: Product Invitation Show"
+        },
+        {
+          "info": {
+            "name": "Users: Product Invitation Confirm",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/users/product-invitations/:invitationId/confirm",
+            "params": [
+              {
+                "name": "invitationId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Product Invitation Confirm"
+        },
+        {
+          "info": {
+            "name": "Users: Product Invitation Revoke",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/users/product-invitations/:invitationId/revoke",
+            "params": [
+              {
+                "name": "invitationId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Users: Product Invitation Revoke"
+        },
+        {
+          "info": {
+            "name": "Users: Product Invitation Renew",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/users/product-invitations/:invitationId/renew",
+            "params": [
+              {
+                "name": "invitationId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Product Invitation Renew"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "admin/users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Users: Cognito Session Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/admin/users/cognito-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Cognito Session Create"
+        },
+        {
+          "info": {
+            "name": "Users: Limited Cognito Session Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/admin/users/limited-cognito-sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Limited Cognito Session Create"
+        },
+        {
+          "info": {
+            "name": "Users: List associated products with bundles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/users/:userId/products",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Users: List associated products with bundles"
+        },
+        {
+          "info": {
+            "name": "Users: Create association with product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/admin/users/:userId/products/:productId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Create association with product"
+        },
+        {
+          "info": {
+            "name": "Users: Update association with product",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://cloud.wellcube.io/api/v1/admin/users/:userId/products/:productId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Users: Update association with product"
+        },
+        {
+          "info": {
+            "name": "Users: Delete association with product",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://cloud.wellcube.io/api/v1/admin/users/:userId/products/:productId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Users: Delete association with product"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "admin/installations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Installation: List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/installations",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "sortedBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Installation id or name"
+              },
+              {
+                "name": "connected",
+                "value": "",
+                "type": "query",
+                "description": "Connectivity status"
+              },
+              {
+                "name": "tags",
+                "value": "",
+                "type": "query",
+                "description": "List of installations tags"
+              },
+              {
+                "name": "productName",
+                "value": "",
+                "type": "query",
+                "description": "Associated product name"
+              },
+              {
+                "name": "userId",
+                "value": "",
+                "type": "query",
+                "description": "Local user id"
+              }
+            ]
+          },
+          "docs": "Installation: List"
+        },
+        {
+          "info": {
+            "name": "Installation: List Products associations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/installations/:installationId/products",
+            "params": [
+              {
+                "name": "installationId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Installation: List Products associations"
+        },
+        {
+          "info": {
+            "name": "Installation: Stats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/installations/:installationId/stats",
+            "params": [
+              {
+                "name": "installationId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Installation: Stats"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "admin/products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Product: List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "sortedBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "resources",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "isOpenRegistration",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Product: List"
+        },
+        {
+          "info": {
+            "name": "Product: Create",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Product: Create"
+        },
+        {
+          "info": {
+            "name": "Product: Stats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products/:productId/stats",
+            "params": [
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Product: Stats"
+        },
+        {
+          "info": {
+            "name": "Product: Show",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products/:productId",
+            "params": [
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Product: Show"
+        },
+        {
+          "info": {
+            "name": "Product: Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products/:productId",
+            "params": [
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Product: Update"
+        },
+        {
+          "info": {
+            "name": "Product: Delete",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products/:productId",
+            "params": [
+              {
+                "name": "productId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Product: Delete"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "admin/products-bundles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Product Bundle: List from AWS",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/admin/products-bundles/aws",
+            "params": [
+              {
+                "name": "search",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Product Bundle: List from AWS"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "actions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Action: Show",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/actions/:actionId",
+            "params": [
+              {
+                "name": "actionId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Action: Show"
+        },
+        {
+          "info": {
+            "name": "Action: Submit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/actions/:actionId",
+            "params": [
+              {
+                "name": "actionId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Action: Submit"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "products",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Product: List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/products",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "sortedBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "name",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Product: List"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "installations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Installation: List",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/installations",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "sortedBy",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "productId",
+                "value": "",
+                "type": "query",
+                "description": "Associated product id"
+              },
+              {
+                "name": "productIsPrimary",
+                "value": "",
+                "type": "query",
+                "description": "Associated product is primary"
+              }
+            ]
+          },
+          "docs": "Installation: List"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "local-accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Local Account: Link",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/local-accounts/link",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Local Account: Link"
+        },
+        {
+          "info": {
+            "name": "Local Account: Share",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/local-accounts/share",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Local Account: Share"
+        },
+        {
+          "info": {
+            "name": "Local Account: Transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/local-accounts/transfer",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Local Account: Transfer"
+        },
+        {
+          "info": {
+            "name": "Local Account: Update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://cloud.wellcube.io/api/v1/local-accounts/:localAccountId",
+            "params": [
+              {
+                "name": "localAccountId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Local Account: Update"
+        },
+        {
+          "info": {
+            "name": "Local Account: Set Global",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/local-accounts/:localAccountId/set-global",
+            "params": [
+              {
+                "name": "localAccountId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Local Account: Set Global"
+        },
+        {
+          "info": {
+            "name": "Local Account: Migrate to federated",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/admin/local-accounts/migrate-to-federated",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Local Account: Migrate to federated"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "global",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Global: ExecuteNVA",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://cloud.wellcube.io/api/v1/global/execute-nva",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Global: ExecuteNVA"
+        },
+        {
+          "info": {
+            "name": "Global: Jobs Show",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/global/jobs/:jobId",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Global: Jobs Show"
+        },
+        {
+          "info": {
+            "name": "Global: Jobs Get Results",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://cloud.wellcube.io/api/v1/global/jobs/:jobId/results",
+            "params": [
+              {
+                "name": "jobId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "noun",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Global: Jobs Get Results"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

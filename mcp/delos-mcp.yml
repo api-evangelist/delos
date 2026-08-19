@@ -4,11 +4,11 @@ status: candidate
 source: openapi/delos-wellcube-cloud-be-openapi.yml
 searched:
   result: none
-  note: No hosted or remote MCP server is published by Delos. Searched the delos.com and wellcube.io sites and
-    sitemaps, the Delos-tech GitHub organization (2 public repos, both JSON-RPC-over-MQTT forks), npm under the
-    verified Delos maintainer account, and probed /.well-known/* plus /mcp-style paths on delos.com, wellcube.io,
-    cloud.wellcube.io and app.wellcube.io. Nothing found. The tool list below is DERIVED from the public OpenAPI
-    and is a candidate proposal by API Evangelist, not a Delos product.
+  note: No hosted or remote MCP server is published by Delos. Searched the delos.com and wellcube.io sites
+    and sitemaps, the Delos-tech GitHub organization (2 public repos, both JSON-RPC-over-MQTT forks),
+    npm under the verified Delos maintainer account, and probed /.well-known/* plus /mcp-style paths on
+    delos.com, wellcube.io, cloud.wellcube.io and app.wellcube.io. Nothing found. The tool list below
+    is DERIVED from the public OpenAPI and is a candidate proposal by API Evangelist, not a Delos product.
   hosts_probed:
   - delos.com
   - wellcube.io
@@ -26,14 +26,16 @@ backing_api:
   auth: Authorization header token — see authentication/delos-authentication.yml
 agent_safety_notes:
 - Every operation returns HTTP 200, including failures. An MCP server fronting this API MUST parse body.status
-  (1 success / 0 failure) rather than the HTTP status line, or it will report every error to the agent as a success.
-  See rate-limits/delos-rate-limits.yml for the live evidence.
-- The API offers no idempotency key. 18 of the 39 operations are writes, several of them destructive or irreversible
-  from an agent's point of view (adminProductDelete, adminUserProductsDelete, localAccountTransfer, userProductInvitationRevoke,
-  globalExecuteNVA). Any tool exposing these needs server-side replay protection or human confirmation.
-- globalExecuteNVA dispatches a command to physical building equipment on a live installation. It is the highest-consequence
-  operation in the surface and should not be exposed as an unattended agent tool.
-- No rate-limit headers are returned, so an MCP server cannot back off on signal and must pace itself conservatively.
+  (1 success / 0 failure) rather than the HTTP status line, or it will report every error to the agent
+  as a success. See rate-limits/delos-rate-limits.yml for the live evidence.
+- The API offers no idempotency key. 18 of the 39 operations are writes, several of them destructive or
+  irreversible from an agent's point of view (adminProductDelete, adminUserProductsDelete, localAccountTransfer,
+  userProductInvitationRevoke, globalExecuteNVA). Any tool exposing these needs server-side replay protection
+  or human confirmation.
+- globalExecuteNVA dispatches a command to physical building equipment on a live installation. It is the
+  highest-consequence operation in the surface and should not be exposed as an unattended agent tool.
+- No rate-limit headers are returned, so an MCP server cannot back off on signal and must pace itself
+  conservatively.
 tool_count: 39
 tools:
 - name: session_create
@@ -481,3 +483,9 @@ tools:
     - limit
     - offset
     request_body: false
+deployment:
+  mode: none
+  verified: derived
+  tools: 39
+  checked: '2026-08-12'
+  source: catalog MCP census
