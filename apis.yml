@@ -18,6 +18,19 @@ created: '2026-08-12'
 modified: '2026-08-12'
 tags:
 - wellness-real-estate
+- Indoor Air Quality
+- indoor-environmental-quality
+- IoT
+- Smart Buildings
+- Building Automation
+- Air Purification
+- environmental-sensors
+- Commercial Real Estate
+- healthy-buildings
+- Hospitality
+- ESG
+tags_raw:
+- wellness-real-estate
 - indoor-air-quality
 - indoor-environmental-quality
 - iot
@@ -41,6 +54,12 @@ apis:
   humanURL: https://cloud.wellcube.io/api/v1/docs/
   baseURL: https://cloud.wellcube.io/api/v1
   tags:
+  - IoT
+  - Smart Buildings
+  - Indoor Air Quality
+  - Device Management
+  - Identity
+  tags_raw:
   - iot
   - smart-buildings
   - indoor-air-quality
