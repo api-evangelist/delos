@@ -43,31 +43,16 @@ tags_raw:
 - hospitality
 - esg
 apis:
-- name: WellCube Cloud BE API
-  description: >-
-    REST API behind the WellCube / Darwin Cloud platform. Covers session and limited-session issuance,
-    user product entitlements and product invitations, installation and product administration with
-    per-installation and per-product statistics, AWS product bundles, device/system actions with
-    asynchronous job polling, and local-account linking, sharing, transfer and migration to federated
-    (AWS Cognito) identity. Served publicly as OpenAPI 3.0.0 through a Swagger UI at
-    https://cloud.wellcube.io/api/v1/docs/; all operations require an Authorization header token.
+- aid: delos:delos-actions-api
+  name: Delos Actions API
+  description: The actions API from Delos — 1 operation(s) for actions.
   humanURL: https://cloud.wellcube.io/api/v1/docs/
   baseURL: https://cloud.wellcube.io/api/v1
   tags:
-  - IoT
-  - Smart Buildings
-  - Indoor Air Quality
-  - Device Management
-  - Identity
-  tags_raw:
-  - iot
-  - smart-buildings
-  - indoor-air-quality
-  - device-management
-  - identity
+  - actions
   properties:
   - type: OpenAPI
-    url: openapi/delos-wellcube-cloud-be-openapi.yml
+    url: openapi/delos-actions-api-openapi.yml
   - type: APIReference
     url: https://cloud.wellcube.io/api/v1/docs/
   - type: Documentation
@@ -80,14 +65,248 @@ apis:
     url: errors/delos-error-codes.yml
   - type: DataModel
     url: data-model/delos-data-model.yml
-  - type: Overlay
-    url: overlays/delos-wellcube-cloud-be-overlay.yaml
-  - type: MCPServer
-    url: mcp/delos-mcp.yml
   - type: ToolCrosswalk
     url: mcp/delos-tool-crosswalk.yml
-  - type: AgentSkill
-    url: skills/_index.yml
+- aid: delos:delos-admin-installations-api
+  name: Delos Admin/installations API
+  description: The admin/installations API from Delos — 3 operation(s) for admin/installations.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - admin/installations
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-admin-installations-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-admin-products-api
+  name: Delos Admin/products API
+  description: The admin/products API from Delos — 3 operation(s) for admin/products.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - admin/products
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-admin-products-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-admin-products-bundles-api
+  name: Delos Admin/products Bundles API
+  description: The admin/products-bundles API from Delos — 1 operation(s) for admin/products-bundles.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - admin/products-bundles
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-admin-products-bundles-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-admin-users-api
+  name: Delos Admin/users API
+  description: The admin/users API from Delos — 4 operation(s) for admin/users.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - admin/users
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-admin-users-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-global-api
+  name: Delos Global API
+  description: The global API from Delos — 3 operation(s) for global.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - global
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-global-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-installations-api
+  name: Delos Installations API
+  description: The installations API from Delos — 1 operation(s) for installations.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - installations
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-installations-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-local-accounts-api
+  name: Delos Local Accounts API
+  description: The local-accounts API from Delos — 6 operation(s) for local-accounts.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - local-accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-local-accounts-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-products-api
+  name: Delos Products API
+  description: The products API from Delos — 1 operation(s) for products.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - products
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-products-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-sessions-api
+  name: Delos Sessions API
+  description: The sessions API from Delos — 4 operation(s) for sessions.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - sessions
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-sessions-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
+- aid: delos:delos-users-api
+  name: Delos Users API
+  description: The users API from Delos — 6 operation(s) for users.
+  humanURL: https://cloud.wellcube.io/api/v1/docs/
+  baseURL: https://cloud.wellcube.io/api/v1
+  tags:
+  - users
+  properties:
+  - type: OpenAPI
+    url: openapi/delos-users-api-openapi.yml
+  - type: APIReference
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Documentation
+    url: https://cloud.wellcube.io/api/v1/docs/
+  - type: Authentication
+    url: authentication/delos-authentication.yml
+  - type: Conventions
+    url: conventions/delos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/delos-error-codes.yml
+  - type: DataModel
+    url: data-model/delos-data-model.yml
+  - type: ToolCrosswalk
+    url: mcp/delos-tool-crosswalk.yml
 common:
 - type: AgenticAccess
   url: agentic-access/delos-agentic-access.yml
