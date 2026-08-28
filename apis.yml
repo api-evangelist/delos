@@ -10,6 +10,18 @@ description: >-
   purifiers and multi-sensor devices for the modern office, backed by the "Cloud BE" / Darwin Cloud
   platform that handles installations, products, device actions and account federation.
 url: https://raw.githubusercontent.com/api-evangelist/delos/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://a-us.storyblok.com/f/1016757/200x62/8b73c5475d/logo_delos_layer_1.svg
 x-type: company
 x-source: harvest:secondary-market
