@@ -1,0 +1,336 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Admin/installations API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: admin/installations
+paths:
+  /admin/installations:
+    get:
+      summary: 'Installation: List'
+      operationId: adminInstallationsList
+      tags:
+      - admin/installations
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - localUserName
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: search
+        in: query
+        description: Installation id or name
+        schema:
+          type: string
+      - name: connected
+        in: query
+        description: Connectivity status
+        schema:
+          type: boolean
+      - name: tags
+        in: query
+        description: List of installations tags
+        schema:
+          type: array
+          items:
+            type: string
+      - name: productName
+        in: query
+        description: Associated product name
+        schema:
+          type: string
+      - name: userId
+        in: query
+        description: Local user id
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: List of installations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+        x-permission-denied:
+          summary: List installations with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/installations/{installationId}/products:
+    get:
+      summary: 'Installation: List Products associations'
+      operationId: adminInstallationsListAssociatedProducts
+      tags:
+      - admin/installations
+      parameters:
+      - name: installationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: List of associated Propducts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Installation'
+        x-permission-denied:
+          summary: List of associated Propducts with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/installations/{installationId}/stats:
+    get:
+      summary: 'Installation: Stats'
+      operationId: adminInstallationStats
+      tags:
+      - admin/installations
+      parameters:
+      - name: installationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Installation Stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      localAccountsCount:
+                        type: integer
+                      cloudUsersCount:
+                        type: integer
+                      productsCount:
+                        type: integer
+                      primaryProductsCount:
+                        type: integer
+        x-wrong-id:
+          summary: Show Installation Stats with non-existing installationId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Show Installation Stats with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+components:
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+  responses:
+    WrongIdError:
+      description: wrong-id
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_ID
+                  fields:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: WRONG_ID
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+  schemas:
+    Installation:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+          format: ipv4
+        ssid:
+          type: string
+        connected:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        localAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalAccount'
+        translators:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+    LocalAccount:
+      type: object
+      required:
+      - id
+      - installationId
+      - cloudUserId
+      - localUserId
+      - localUserToken
+      - localUserGroups
+      - isPrimary
+      - isLegacy
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        cloudUserId:
+          type: string
+          format: uuid
+        localUserId:
+          type: string
+        localUserToken:
+          type: string
+        localUserSites:
+          type: object
+        localUserGroups:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        isPrimary:
+          type: boolean
+        isLegacy:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

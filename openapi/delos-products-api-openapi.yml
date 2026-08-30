@@ -1,0 +1,177 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Products API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: products
+paths:
+  /products:
+    get:
+      summary: 'Product: List'
+      operationId: productList
+      tags:
+      - products
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - name
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: Products List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+components:
+  schemas:
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

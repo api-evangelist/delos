@@ -1,0 +1,167 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Actions API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: actions
+paths:
+  /actions/{actionId}:
+    post:
+      summary: 'Action: Submit'
+      operationId: actionSubmit
+      tags:
+      - actions
+      parameters:
+      - name: actionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+      responses:
+        default:
+          description: Action-specific response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+      x-not-exists:
+        $ref: '#/components/responses/NotExistsError'
+      x-expired:
+        $ref: '#/components/responses/ExpiredError'
+    get:
+      summary: 'Action: Show'
+      operationId: actionShow
+      tags:
+      - actions
+      parameters:
+      - name: actionId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Action
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Action'
+      x-not-exists:
+        $ref: '#/components/responses/NotExistsError'
+      x-expired:
+        $ref: '#/components/responses/ExpiredError'
+components:
+  responses:
+    ExpiredError:
+      description: Entity has expired state
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: EXPIRED
+                  fields:
+                    type: object
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+  schemas:
+    Action:
+      type: object
+      required:
+      - id
+      - type
+      - data
+      - isExpired
+      - expiresAt
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        isExpired:
+          type: boolean
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

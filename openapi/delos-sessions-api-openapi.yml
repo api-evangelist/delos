@@ -1,0 +1,406 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Sessions API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: sessions
+paths:
+  /sessions:
+    post:
+      summary: 'Session: Create'
+      operationId: sessionCreate
+      tags:
+      - sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - email
+                  - password
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      format: password
+                    product:
+                      type: string
+              example:
+                data:
+                  email: admin@admin.admin
+                  password: mypass1
+      responses:
+        default:
+          description: Deprecated create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    required:
+                    - jwt
+                    properties:
+                      jwt:
+                        type: string
+                      wasProductAdded:
+                        type: boolean
+                        example: false
+        x-authentification-failed:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: AUTHENTICATION_FAILED
+                      fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: INVALID
+                          password:
+                            type: string
+                            example: INVALID
+                          status:
+                            type: string
+                            example: NOT_ACTIVE_USER
+                    examples:
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        email: INVALID
+                        password: INVALID
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        status: NOT_ACTIVE_USER
+  /sessions/validate:
+    get:
+      summary: Validate auth token
+      operationId: sessionValidate
+      tags:
+      - sessions
+      responses:
+        default:
+          description: Token valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+                        example: ACTIVE
+                      role:
+                        type: string
+                        example: USER
+        x-wrong-token:
+          summary: Wrong token in headers
+          $ref: '#/components/responses/WrongTokenError'
+        x-user-not-valid-token:
+          summary: User coded in token is not valid
+          $ref: '#/components/responses/UserNotValidTokenError'
+        x-user-not-active-token:
+          summary: User coded in token is not active
+          $ref: '#/components/responses/UserNotActiveTokenError'
+  /limited-sessions:
+    post:
+      summary: 'Session: Create Limited'
+      operationId: limitedSessionCreate
+      tags:
+      - sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - email
+                  - password
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                    password:
+                      type: string
+                      format: password
+                    product:
+                      type: string
+              example:
+                data:
+                  email: admin@admin.admin
+                  password: mypass1
+      responses:
+        default:
+          description: Common create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-authentification-failed:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: AUTHENTICATION_FAILED
+                      fields:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            example: INVALID
+                          password:
+                            type: string
+                            example: INVALID
+                          status:
+                            type: string
+                            example: NOT_ACTIVE_USER
+                    examples:
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        email: INVALID
+                        password: INVALID
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        status: NOT_ACTIVE_USER
+  /limited-sessions/refresh:
+    post:
+      summary: 'Session: Refresh Limited'
+      operationId: limitedSessionRefresh
+      tags:
+      - sessions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - refreshToken
+                  properties:
+                    refreshToken:
+                      type: string
+      responses:
+        default:
+          description: Common create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-authentification-failed:
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: AUTHENTICATION_FAILED
+                      fields:
+                        type: object
+                        properties:
+                          refreshToken:
+                            type: string
+                            example: EXPIRED
+                          status:
+                            type: string
+                            example: NOT_ACTIVE_USER
+                    examples:
+                    - code: AUTHENTICATION_FAILED
+                      fields:
+                        refreshToken: EXPIRED
+components:
+  responses:
+    UserNotActiveTokenError:
+      description: User coded in token is not active
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: USER_NOT_ACTIVE
+    UserNotValidTokenError:
+      description: User coded in token is not valid
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: USER_NOT_VALID
+    WrongTokenError:
+      description: Wrong token
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: WRONG_TOKEN
+  schemas:
+    AccessData:
+      type: object
+      required:
+      - accessToken
+      - refreshToken
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

@@ -1,0 +1,509 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Admin/users API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: admin/users
+paths:
+  /admin/users/cognito-sessions:
+    post:
+      summary: 'Users: Cognito Session Create'
+      operationId: adminUserCognitoSessionCreate
+      tags:
+      - admin/users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - cognitoUserId
+                  properties:
+                    cognitoUserId:
+                      type: string
+      responses:
+        default:
+          description: Deprecated create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    required:
+                    - jwt
+                    properties:
+                      jwt:
+                        type: string
+        x-permission-denied:
+          summary: Create session for cognito user with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-auth-failed:
+          summary: Auth failed because of invalid cognito user data
+          $ref: '#/components/responses/AuthFailedError'
+  /admin/users/limited-cognito-sessions:
+    post:
+      summary: 'Users: Limited Cognito Session Create'
+      operationId: adminUserLimitedCognitoSessionCreate
+      tags:
+      - admin/users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - cognitoUserId
+                  properties:
+                    cognitoUserId:
+                      type: string
+      responses:
+        default:
+          description: Common create session response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-permission-denied:
+          summary: Create session for cognito user with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-auth-failed:
+          summary: Auth failed because of invalid cognito user data
+          $ref: '#/components/responses/AuthFailedError'
+  /admin/users/{userId}/products:
+    get:
+      summary: 'Users: List associated products with bundles'
+      operationId: adminUserProductsList
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Common associated products list response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        x-not-exists:
+          summary: List associated products for non-existing user
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: List user associated products with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/users/{userId}/products/{productId}:
+    post:
+      summary: 'Users: Create association with product'
+      operationId: adminUserProductsCreate
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    productBundlesIds:
+                      type: array
+                      items:
+                        type: string
+      responses:
+        default:
+          description: Common associated product response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-not-exists:
+          summary: Create associated products for non-existing user or product
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: Create user-to-product association with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    put:
+      summary: 'Users: Update association with product'
+      operationId: adminUserProductsUpdate
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    productBundlesIds:
+                      type: array
+                      items:
+                        type: string
+      responses:
+        default:
+          description: Common associated product response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-action-not-allowed:
+          summary: Update user-to-product association for not associated product
+          $ref: '#/components/responses/ActionNotAllowedError'
+        x-not-exists:
+          summary: Update associated products for non-existing user
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: Update user-to-product association with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    delete:
+      summary: 'Users: Delete association with product'
+      operationId: adminUserProductsDelete
+      tags:
+      - admin/users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: string
+      responses:
+        default:
+          description: Common action success response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+        x-permission-denied:
+          summary: Delete user-to-product association with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+components:
+  responses:
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    AuthFailedError:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: AUTHENTICATION_FAILED
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+  schemas:
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AccessData:
+      type: object
+      required:
+      - accessToken
+      - refreshToken
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

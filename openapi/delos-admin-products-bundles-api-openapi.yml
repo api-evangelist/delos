@@ -1,0 +1,83 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Admin/products Bundles API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: admin/products-bundles
+paths:
+  /admin/products-bundles/aws:
+    get:
+      summary: 'Product Bundle: List from AWS'
+      operationId: adminProductsBundlesAWSList
+      tags:
+      - admin/products-bundles
+      parameters:
+      - name: search
+        in: query
+        schema:
+          type: string
+      responses:
+        default:
+          description: List Products Bundles from AWS
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      type: string
+        x-permission-denied:
+          summary: List Products Bundles from AWS with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+components:
+  responses:
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

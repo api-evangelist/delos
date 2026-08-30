@@ -1,0 +1,525 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Admin/products API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: admin/products
+paths:
+  /admin/products:
+    get:
+      summary: 'Product: List'
+      operationId: adminProductList
+      tags:
+      - admin/products
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      - name: sortedBy
+        in: query
+        schema:
+          type: string
+          enum:
+          - id
+          - localUserName
+          - createdAt
+          - updatedAt
+          example: createdAt
+      - $ref: '#/components/parameters/order'
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: resources
+        in: query
+        schema:
+          type: string
+      - name: isOpenRegistration
+        in: query
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: List Products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        x-permission-denied:
+          summary: List Products with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    post:
+      summary: 'Product: Create'
+      operationId: adminProductCreate
+      tags:
+      - admin/products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - name
+                  - primaryInstallationId
+                  properties:
+                    name:
+                      type: string
+                    primaryInstallationId:
+                      type: string
+                      format: uuid
+                    details:
+                      type: string
+                    resources:
+                      type: string
+                    isOpenRegistration:
+                      type: boolean
+                    canAssociateInstallation:
+                      type: boolean
+                    bundlesNames:
+                      type: array
+                      items:
+                        type: string
+                    primaryBundle:
+                      type: string
+      responses:
+        default:
+          description: Create Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-not-unique:
+          summary: Create Product with existing name
+          description: not-unique
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_UNIQUE
+                      fields:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: NOT_UNIQUE
+        x-permission-denied:
+          summary: Create Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/products/{productId}/stats:
+    get:
+      summary: 'Product: Stats'
+      operationId: adminProductStats
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Product Stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      cloudUsersCount:
+                        type: integer
+                      productBundlesCount:
+                        type: integer
+                      installationsCount:
+                        type: integer
+                      plansCount:
+                        type: integer
+                      redeemCodesCount:
+                        type: integer
+        x-wrong-id:
+          summary: Show Product Stats with non-existing productId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Show Product Stats with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+  /admin/products/{productId}:
+    get:
+      summary: 'Product: Show'
+      operationId: adminProductShow
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Show Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-wrong-id:
+          summary: Show Product with non-existing productId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Show Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    put:
+      summary: 'Product: Update'
+      operationId: adminProductUpdate
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    primaryInstallationId:
+                      type: string
+                      format: uuid
+                    details:
+                      type: string
+                    resources:
+                      type: string
+                    isOpenRegistration:
+                      type: boolean
+                    canAssociateInstallation:
+                      type: boolean
+                    bundlesNames:
+                      type: array
+                      items:
+                        type: string
+                    primaryBundle:
+                      type: string
+      responses:
+        default:
+          description: Update Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/Product'
+        x-not-unique:
+          summary: Update Product with existing name
+          description: not-unique
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - error
+                properties:
+                  status:
+                    type: integer
+                    example: 0
+                  error:
+                    type: object
+                    required:
+                    - code
+                    - fields
+                    properties:
+                      code:
+                        type: string
+                        example: NOT_UNIQUE
+                      fields:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: NOT_UNIQUE
+        x-permission-denied:
+          summary: Update Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+    delete:
+      summary: 'Product: Delete'
+      operationId: adminProductDelete
+      tags:
+      - admin/products
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Delete Product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+        x-wrong-id:
+          summary: Delete Product with non-existing productId
+          $ref: '#/components/responses/WrongIdError'
+        x-permission-denied:
+          summary: Delete Product with non-admin permissions
+          $ref: '#/components/responses/PermissionDeniedError'
+components:
+  schemas:
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+  responses:
+    WrongIdError:
+      description: wrong-id
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_ID
+                  fields:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: WRONG_ID
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

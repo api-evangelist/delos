@@ -1,0 +1,599 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Local Accounts API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: local-accounts
+paths:
+  /local-accounts/link:
+    post:
+      summary: 'Local Account: Link'
+      operationId: localAccountLink
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  - installationCredentials
+                  - localUser
+                  properties:
+                    installationId:
+                      type: string
+                    installationCredentials:
+                      type: object
+                      properties:
+                        manipulatorId:
+                          type: string
+                        accessToken:
+                          type: string
+                        login:
+                          type: string
+                        password:
+                          type: string
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Linked LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          summary: Installation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-already-exists:
+          summary: LocalAccount already exists
+          $ref: '#/components/responses/AlreadyExistsError'
+        x-wrong-credentials:
+          summary: Wrong installation credentials
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          summary: Unhandled Installation error
+          $ref: '#/components/responses/InstallationNvaError'
+  /local-accounts/share:
+    post:
+      summary: 'Local Account: Share'
+      operationId: localAccountShare
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  - email
+                  - localUser
+                  properties:
+                    installationId:
+                      type: string
+                    email:
+                      type: string
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Shared LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          summary: Installation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-already-exists:
+          summary: LocalAccount already exists
+          $ref: '#/components/responses/AlreadyExistsError'
+        x-action-not-allowed:
+          summary: Sharing to this user is not allowed
+          $ref: '#/components/responses/ActionNotAllowedError'
+        x-permission-denied:
+          summary: No access to installation
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-wrong-credentials:
+          summary: Wrong installation credentials
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          summary: Unhandled Installation error
+          $ref: '#/components/responses/InstallationNvaError'
+  /local-accounts/transfer:
+    post:
+      summary: 'Local Account: Transfer'
+      operationId: localAccountTransfer
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  - email
+                  - localUser
+                  properties:
+                    installationId:
+                      type: string
+                    email:
+                      type: string
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Transfered LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          summary: Installation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-already-exists:
+          summary: LocalAccount already exists
+          $ref: '#/components/responses/AlreadyExistsError'
+        x-action-not-allowed:
+          summary: Transfering to this user is not allowed
+          $ref: '#/components/responses/ActionNotAllowedError'
+        x-permission-denied:
+          summary: No access to installation
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-wrong-credentials:
+          summary: Wrong installation credentials
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          summary: Unhandled Installation error
+          $ref: '#/components/responses/InstallationNvaError'
+  /local-accounts/{localAccountId}:
+    put:
+      summary: 'Local Account: Update'
+      operationId: localAccountUpdate
+      tags:
+      - local-accounts
+      parameters:
+      - name: localAccountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - localUser
+                  properties:
+                    localUser:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        password:
+                          type: string
+                        sites:
+                          type: object
+                        groups:
+                          type: array
+                          items:
+                            type: string
+      responses:
+        default:
+          description: Updated LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    allOf:
+                    - $ref: '#/components/schemas/LocalAccount'
+                    - type: object
+                      properties:
+                        localUserUpdatesStatuses:
+                          type: object
+                          properties:
+                            name:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+                            password:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+                            groups:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+                            sites:
+                              oneOf:
+                              - type: boolean
+                              - type: object
+        x-not-exists:
+          summary: Local account not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          summary: No access to local account
+          $ref: '#/components/responses/PermissionDeniedError'
+  /local-accounts/{localAccountId}/set-global:
+    post:
+      summary: 'Local Account: Set Global'
+      operationId: localAccountSetGlobal
+      tags:
+      - local-accounts
+      parameters:
+      - name: localAccountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - isGlobal
+                  properties:
+                    isGlobal:
+                      type: boolean
+      responses:
+        default:
+          description: Updated LocalAccount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/LocalAccount'
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/InstallationWrongCredentialsError'
+        x-darwin-core-error:
+          $ref: '#/components/responses/InstallationNvaError'
+  /admin/local-accounts/migrate-to-federated:
+    post:
+      summary: 'Local Account: Migrate to federated'
+      operationId: localAccountMigrateToFederated
+      tags:
+      - local-accounts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - installationId
+                  properties:
+                    installationId:
+                      type: string
+      responses:
+        default:
+          description: Created Job id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: string
+                    example: uuid
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+components:
+  responses:
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    InstallationNvaError:
+      description: Error occurred in Installation after sending nva
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_NVA_ERROR
+                  fields:
+                    type: object
+    AlreadyExistsError:
+      description: Entity already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_EXISTS
+                  fields:
+                    type: object
+    InstallationWrongCredentialsError:
+      description: Wrong credentials
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_WRONG_CREDENTIALS
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+  schemas:
+    LocalAccount:
+      type: object
+      required:
+      - id
+      - installationId
+      - cloudUserId
+      - localUserId
+      - localUserToken
+      - localUserGroups
+      - isPrimary
+      - isLegacy
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        cloudUserId:
+          type: string
+          format: uuid
+        localUserId:
+          type: string
+        localUserToken:
+          type: string
+        localUserSites:
+          type: object
+        localUserGroups:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+        isPrimary:
+          type: boolean
+        isLegacy:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

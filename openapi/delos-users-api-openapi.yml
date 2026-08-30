@@ -1,0 +1,543 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Users API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: users
+paths:
+  /users/{userId}/products:
+    get:
+      summary: 'Users: List associated products with bundles'
+      operationId: userProductsList
+      tags:
+      - users
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Common associated products list response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - status
+                - data
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+        x-permission-denied:
+          summary: List associated products for another user than auth token
+          $ref: '#/components/responses/PermissionDeniedError'
+  /users/product-invitations:
+    post:
+      summary: 'Users: Product Invitation Create'
+      operationId: userProductInvitationCreate
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - email
+                  - product
+                  properties:
+                    email:
+                      type: string
+                    emailTemplate:
+                      type: object
+                      properties:
+                        bucket:
+                          type: string
+                        key:
+                          type: string
+                        sender:
+                          type: string
+                        subject:
+                          type: string
+                        params:
+                          type: object
+                    product:
+                      type: string
+                    localState:
+                      type: object
+                    localGroups:
+                      type: array
+                      items:
+                        type: string
+                    expirationTime:
+                      type: integer
+                      description: Time to expire in seconds, default 2 days
+                      default: 172800
+      responses:
+        default:
+          description: Created product invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/ProductInvitation'
+        x-permission-denied:
+          summary: Create invitation with no access to product installation
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-product-not-exists:
+          summary: Product to create invitation not exists
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-unique:
+          summary: User data to invite is not unique
+          $ref: '#/components/responses/NotUniqueError'
+  /users/product-invitations/{invitationId}:
+    get:
+      summary: 'Users: Product Invitation Show'
+      operationId: userProductInvitationShow
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Product invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/ProductInvitation'
+        x-action-not-exists:
+          summary: Invite action not exists
+          $ref: '#/components/responses/NotExistsError'
+  /users/product-invitations/{invitationId}/confirm:
+    post:
+      summary: 'Users: Product Invitation Confirm'
+      operationId: userProductInvitationConfirm
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - cognitoUserId
+                  - firstName
+                  - secondName
+                  properties:
+                    cognitoUserId:
+                      type: string
+                    firstName:
+                      type: string
+                    secondName:
+                      type: string
+                    company:
+                      type: string
+                    phone:
+                      type: string
+      responses:
+        default:
+          description: Access data for confirmed user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/AccessData'
+        x-action-expired:
+          $ref: '#/components/responses/ExpiredError'
+        x-action-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-product-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /users/product-invitations/{invitationId}/revoke:
+    post:
+      summary: 'Users: Product Invitation Revoke'
+      operationId: userProductInvitationRevoke
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Success status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: boolean
+                    example: true
+        x-action-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-product-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /users/product-invitations/{invitationId}/renew:
+    post:
+      summary: 'Users: Product Invitation Renew'
+      operationId: userProductInvitationRenew
+      tags:
+      - users
+      parameters:
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  properties:
+                    expirationTime:
+                      type: integer
+                      description: Time to expire in seconds, default 2 days
+                      default: 172800
+      responses:
+        default:
+          description: Updated product invitation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    $ref: '#/components/schemas/ProductInvitation'
+        x-action-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-user-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-product-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+components:
+  responses:
+    ExpiredError:
+      description: Entity has expired state
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: EXPIRED
+                  fields:
+                    type: object
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+    NotUniqueError:
+      description: Entity data is not unique
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_UNIQUE
+                  fields:
+                    type: object
+  schemas:
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AccessData:
+      type: object
+      required:
+      - accessToken
+      - refreshToken
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProductInvitation:
+      type: object
+      required:
+      - id
+      - userId
+      - email
+      - productName
+      - invitedBy
+      - isExpired
+      - expiresAt
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        email:
+          type: string
+        productName:
+          type: string
+        invitedBy:
+          type: string
+          format: uuid
+        isExpired:
+          type: boolean
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header

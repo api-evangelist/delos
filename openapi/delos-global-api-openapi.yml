@@ -1,0 +1,289 @@
+openapi: 3.2.0
+info:
+  version: 11.13.9
+  title: Cloud BE Global API
+  license:
+    name: MIT
+servers:
+- url: https://cloud.wellcube.io/api/v1
+security:
+- Authorization: []
+tags:
+- name: global
+paths:
+  /global/execute-nva:
+    post:
+      summary: 'Global: ExecuteNVA'
+      operationId: globalExecuteNVA
+      tags:
+      - global
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - globalTag
+                  - nva
+                  properties:
+                    globalTag:
+                      type: string
+                    nva:
+                      type: object
+      responses:
+        default:
+          description: Created Job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-not-found:
+          $ref: '#/components/responses/NotFoundError'
+  /global/jobs/{jobId}:
+    get:
+      summary: 'Global: Jobs Show'
+      operationId: globalJobsShow
+      tags:
+      - global
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        default:
+          description: Requested Job
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+  /global/jobs/{jobId}/results:
+    get:
+      summary: 'Global: Jobs Get Results'
+      operationId: globalJobsGetResults
+      tags:
+      - global
+      parameters:
+      - name: jobId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: noun
+        in: query
+        schema:
+          type: string
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/offset'
+      responses:
+        default:
+          description: Requested Job Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        installationId:
+                          type: string
+                        installationName:
+                          type: string
+                        localAccountId:
+                          type: string
+                        localAccountName:
+                          type: string
+                        status:
+                          type: integer
+                          example: 1
+                        data:
+                          type: array
+                          items:
+                            type: object
+                        error:
+                          type: object
+                  meta:
+                    type: object
+                    properties:
+                      totalCount:
+                        type: integer
+                      filteredCount:
+                        type: integer
+                      limit:
+                        type: integer
+                      offset:
+                        type: integer
+        x-not-exists:
+          $ref: '#/components/responses/NotExistsError'
+        x-permission-denied:
+          $ref: '#/components/responses/PermissionDeniedError'
+        x-action-not-allowed:
+          $ref: '#/components/responses/ActionNotAllowedError'
+components:
+  responses:
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_FOUND
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      name: Authorization
+      in: header
