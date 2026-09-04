@@ -22,6 +22,20 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://a-us.storyblok.com/f/1016757/200x62/8b73c5475d/logo_delos_layer_1.svg
 x-type: company
 x-source: harvest:secondary-market
@@ -382,8 +396,9 @@ common:
   url: llms/delos-llms.txt
 - type: Overlay
   url: overlays/delos-wellcube-cloud-be-overlay.yaml
-- type: MCPServer
+- type: X-MCPServerCandidate
   url: mcp/delos-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
 - type: ToolCrosswalk
   url: mcp/delos-tool-crosswalk.yml
 - type: AgentSkill
