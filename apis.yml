@@ -1,13 +1,12 @@
 aid: delos
 name: Delos
-description: >-
-  Delos Living LLC is a New York-based wellness real estate and technology company that applies building
-  science and evidence-based research to indoor environments across commercial, residential, hospitality,
-  education, senior living and transportation. Delos is the founder of the WELL Building Standard (now
-  administered by the International WELL Building Institute) and co-founder of the Well Living Lab with
-  Mayo Clinic. Its product line spans Intellipure advanced air purification, indoor environmental quality
-  (IEQ) sensing, the Stay Well hospitality program, and WellCube — a connected system of localized air
-  purifiers and multi-sensor devices for the modern office, backed by the "Cloud BE" / Darwin Cloud
+description: Delos Living LLC is a New York-based wellness real estate and technology company that applies
+  building science and evidence-based research to indoor environments across commercial, residential,
+  hospitality, education, senior living and transportation. Delos is the founder of the WELL Building
+  Standard (now administered by the International WELL Building Institute) and co-founder of the Well
+  Living Lab with Mayo Clinic. Its product line spans Intellipure advanced air purification, indoor environmental
+  quality (IEQ) sensing, the Stay Well hospitality program, and WellCube — a connected system of localized
+  air purifiers and multi-sensor devices for the modern office, backed by the "Cloud BE" / Darwin Cloud
   platform that handles installations, products, device actions and account federation.
 url: https://raw.githubusercontent.com/api-evangelist/delos/refs/heads/main/apis.yml
 deliveryModel:
@@ -41,7 +40,7 @@ x-type: company
 x-source: harvest:secondary-market
 specificationVersion: '0.23'
 created: '2026-08-12'
-modified: '2026-08-12'
+modified: '2026-09-16'
 tags:
 - wellness-real-estate
 - Indoor Air Quality
@@ -377,7 +376,7 @@ common:
 - type: PrivacyPolicy
   url: https://wellcube.io/privacy-policy
 - type: OpenAPI
-  url: openapi/delos-wellcube-cloud-be-openapi.yml
+  url: openapi/_original/delos-wellcube-cloud-be-openapi.yml
 - type: Authentication
   url: authentication/delos-authentication.yml
 - type: Conventions
@@ -398,7 +397,10 @@ common:
   url: overlays/delos-wellcube-cloud-be-overlay.yaml
 - type: X-MCPServerCandidate
   url: mcp/delos-mcp.yml
-  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate
+    — a tool list derived from the published API contracts, not an existing server. The scorer already
+    read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type
+    surfaces with a server that does not exist.'
 - type: ToolCrosswalk
   url: mcp/delos-tool-crosswalk.yml
 - type: AgentSkill
@@ -412,7 +414,6 @@ maintainers:
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
-
 x-enrichment:
   date: '2026-08-12'
   status: enriched
