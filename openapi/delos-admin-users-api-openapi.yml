@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: admin/users
+- name: Admin Users
 paths:
   /admin/users/cognito-sessions:
     post:
       summary: 'Users: Cognito Session Create'
       operationId: adminUserCognitoSessionCreate
       tags:
-      - admin/users
+      - Admin Users
       requestBody:
         content:
           application/json:
@@ -64,7 +64,7 @@ paths:
       summary: 'Users: Limited Cognito Session Create'
       operationId: adminUserLimitedCognitoSessionCreate
       tags:
-      - admin/users
+      - Admin Users
       requestBody:
         content:
           application/json:
@@ -107,7 +107,7 @@ paths:
       summary: 'Users: List associated products with bundles'
       operationId: adminUserProductsList
       tags:
-      - admin/users
+      - Admin Users
       parameters:
       - name: userId
         in: path
@@ -144,7 +144,7 @@ paths:
       summary: 'Users: Create association with product'
       operationId: adminUserProductsCreate
       tags:
-      - admin/users
+      - Admin Users
       parameters:
       - name: userId
         in: path
@@ -199,7 +199,7 @@ paths:
       summary: 'Users: Update association with product'
       operationId: adminUserProductsUpdate
       tags:
-      - admin/users
+      - Admin Users
       parameters:
       - name: userId
         in: path
@@ -257,7 +257,7 @@ paths:
       summary: 'Users: Delete association with product'
       operationId: adminUserProductsDelete
       tags:
-      - admin/users
+      - Admin Users
       parameters:
       - name: userId
         in: path
@@ -288,113 +288,6 @@ paths:
           summary: Delete user-to-product association with non-admin permissions
           $ref: '#/components/responses/PermissionDeniedError'
 components:
-  responses:
-    NotExistsError:
-      description: Entity not exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_EXISTS
-                  fields:
-                    type: object
-    AuthFailedError:
-      description: Authentication failed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: AUTHENTICATION_FAILED
-                  fields:
-                    type: object
-    PermissionDeniedError:
-      description: permission-denied
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: PERMISSION_DENIED
-                  message:
-                    type: string
-                    example: Permission denied
-                  fields:
-                    type: object
-                    properties:
-                      userRole:
-                        type: string
-                        enum:
-                        - USER
-                        - GLOBAL_ROUTER_ADMIN
-                        example: USER
-    ActionNotAllowedError:
-      description: Action not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
   schemas:
     InstallationToProduct:
       type: object
@@ -440,6 +333,29 @@ components:
           type: string
         refreshToken:
           type: string
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Product:
       type: object
       required:
@@ -479,29 +395,113 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstallationToProduct'
-    ProductBundle:
-      type: object
-      required:
-      - id
-      - productId
-      - bundleName
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        bundleName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+  responses:
+    AuthFailedError:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: AUTHENTICATION_FAILED
+                  fields:
+                    type: object
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
   securitySchemes:
     Authorization:
       type: apiKey

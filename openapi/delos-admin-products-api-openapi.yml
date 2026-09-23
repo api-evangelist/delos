@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: admin/products
+- name: Admin - Products
 paths:
   /admin/products:
     get:
       summary: 'Product: List'
       operationId: adminProductList
       tags:
-      - admin/products
+      - Admin - Products
       parameters:
       - $ref: '#/components/parameters/limit'
       - $ref: '#/components/parameters/offset'
@@ -65,7 +65,7 @@ paths:
       summary: 'Product: Create'
       operationId: adminProductCreate
       tags:
-      - admin/products
+      - Admin - Products
       requestBody:
         content:
           application/json:
@@ -149,7 +149,7 @@ paths:
       summary: 'Product: Stats'
       operationId: adminProductStats
       tags:
-      - admin/products
+      - Admin - Products
       parameters:
       - name: productId
         in: path
@@ -192,7 +192,7 @@ paths:
       summary: 'Product: Show'
       operationId: adminProductShow
       tags:
-      - admin/products
+      - Admin - Products
       parameters:
       - name: productId
         in: path
@@ -223,7 +223,7 @@ paths:
       summary: 'Product: Update'
       operationId: adminProductUpdate
       tags:
-      - admin/products
+      - Admin - Products
       parameters:
       - name: productId
         in: path
@@ -310,7 +310,7 @@ paths:
       summary: 'Product: Delete'
       operationId: adminProductDelete
       tags:
-      - admin/products
+      - Admin - Products
       parameters:
       - name: productId
         in: path
@@ -371,6 +371,29 @@ components:
         updatedAt:
           type: string
           format: date-time
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Product:
       type: object
       required:
@@ -410,36 +433,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstallationToProduct'
-    ProductBundle:
-      type: object
-      required:
-      - id
-      - productId
-      - bundleName
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        bundleName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
   parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
     limit:
       name: limit
       in: query
@@ -455,6 +449,12 @@ components:
         - ASC
         - DESC
         example: DESC
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   responses:
     WrongIdError:
       description: wrong-id

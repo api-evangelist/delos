@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: local-accounts
+- name: Local Accounts
 paths:
   /local-accounts/link:
     post:
       summary: 'Local Account: Link'
       operationId: localAccountLink
       tags:
-      - local-accounts
+      - Local Accounts
       requestBody:
         content:
           application/json:
@@ -88,7 +88,7 @@ paths:
       summary: 'Local Account: Share'
       operationId: localAccountShare
       tags:
-      - local-accounts
+      - Local Accounts
       requestBody:
         content:
           application/json:
@@ -157,7 +157,7 @@ paths:
       summary: 'Local Account: Transfer'
       operationId: localAccountTransfer
       tags:
-      - local-accounts
+      - Local Accounts
       requestBody:
         content:
           application/json:
@@ -226,7 +226,7 @@ paths:
       summary: 'Local Account: Update'
       operationId: localAccountUpdate
       tags:
-      - local-accounts
+      - Local Accounts
       parameters:
       - name: localAccountId
         in: path
@@ -306,7 +306,7 @@ paths:
       summary: 'Local Account: Set Global'
       operationId: localAccountSetGlobal
       tags:
-      - local-accounts
+      - Local Accounts
       parameters:
       - name: localAccountId
         in: path
@@ -353,7 +353,7 @@ paths:
       summary: 'Local Account: Migrate to federated'
       operationId: localAccountMigrateToFederated
       tags:
-      - local-accounts
+      - Local Accounts
       requestBody:
         content:
           application/json:
@@ -413,30 +413,6 @@ components:
                     example: NOT_EXISTS
                   fields:
                     type: object
-    InstallationNvaError:
-      description: Error occurred in Installation after sending nva
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: INSTALLATION_NVA_ERROR
-                  fields:
-                    type: object
     AlreadyExistsError:
       description: Entity already exists
       content:
@@ -485,6 +461,54 @@ components:
                     example: INSTALLATION_WRONG_CREDENTIALS
                   fields:
                     type: object
+    InstallationNvaError:
+      description: Error occurred in Installation after sending nva
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_NVA_ERROR
+                  fields:
+                    type: object
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
     PermissionDeniedError:
       description: permission-denied
       content:
@@ -519,30 +543,6 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
-    ActionNotAllowedError:
-      description: Action not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
   schemas:
     LocalAccount:
       type: object

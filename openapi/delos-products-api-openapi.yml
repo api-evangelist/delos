@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: products
+- name: Products
 paths:
   /products:
     get:
       summary: 'Product: List'
       operationId: productList
       tags:
-      - products
+      - Products
       parameters:
       - $ref: '#/components/parameters/limit'
       - $ref: '#/components/parameters/offset'
@@ -51,6 +51,28 @@ paths:
                     items:
                       $ref: '#/components/schemas/Product'
 components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   schemas:
     InstallationToProduct:
       type: object
@@ -79,6 +101,29 @@ components:
         productName:
           type: string
         installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
           type: string
         createdAt:
           type: string
@@ -125,51 +170,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstallationToProduct'
-    ProductBundle:
-      type: object
-      required:
-      - id
-      - productId
-      - bundleName
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        bundleName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-  parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
   securitySchemes:
     Authorization:
       type: apiKey

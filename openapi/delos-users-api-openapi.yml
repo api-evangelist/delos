@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: users
+- name: Users
 paths:
   /users/{userId}/products:
     get:
       summary: 'Users: List associated products with bundles'
       operationId: userProductsList
       tags:
-      - users
+      - Users
       parameters:
       - name: userId
         in: path
@@ -50,7 +50,7 @@ paths:
       summary: 'Users: Product Invitation Create'
       operationId: userProductInvitationCreate
       tags:
-      - users
+      - Users
       requestBody:
         content:
           application/json:
@@ -119,7 +119,7 @@ paths:
       summary: 'Users: Product Invitation Show'
       operationId: userProductInvitationShow
       tags:
-      - users
+      - Users
       parameters:
       - name: invitationId
         in: path
@@ -148,7 +148,7 @@ paths:
       summary: 'Users: Product Invitation Confirm'
       operationId: userProductInvitationConfirm
       tags:
-      - users
+      - Users
       parameters:
       - name: invitationId
         in: path
@@ -209,7 +209,7 @@ paths:
       summary: 'Users: Product Invitation Revoke'
       operationId: userProductInvitationRevoke
       tags:
-      - users
+      - Users
       parameters:
       - name: invitationId
         in: path
@@ -244,7 +244,7 @@ paths:
       summary: 'Users: Product Invitation Renew'
       operationId: userProductInvitationRenew
       tags:
-      - users
+      - Users
       parameters:
       - name: invitationId
         in: path
@@ -289,113 +289,6 @@ paths:
         x-permission-denied:
           $ref: '#/components/responses/PermissionDeniedError'
 components:
-  responses:
-    ExpiredError:
-      description: Entity has expired state
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: EXPIRED
-                  fields:
-                    type: object
-    NotExistsError:
-      description: Entity not exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_EXISTS
-                  fields:
-                    type: object
-    PermissionDeniedError:
-      description: permission-denied
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: PERMISSION_DENIED
-                  message:
-                    type: string
-                    example: Permission denied
-                  fields:
-                    type: object
-                    properties:
-                      userRole:
-                        type: string
-                        enum:
-                        - USER
-                        - GLOBAL_ROUTER_ADMIN
-                        example: USER
-    NotUniqueError:
-      description: Entity data is not unique
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_UNIQUE
-                  fields:
-                    type: object
   schemas:
     InstallationToProduct:
       type: object
@@ -441,45 +334,6 @@ components:
           type: string
         refreshToken:
           type: string
-    Product:
-      type: object
-      required:
-      - id
-      - name
-      - isOpenRegistration
-      - canAssociateInstallation
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        details:
-          type: string
-        resources:
-          type: string
-        isOpenRegistration:
-          type: boolean
-          example: false
-        canAssociateInstallation:
-          type: boolean
-          example: false
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        bundles:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductBundle'
-        installationsToProduct:
-          type: array
-          items:
-            $ref: '#/components/schemas/InstallationToProduct'
     ProductBundle:
       type: object
       required:
@@ -536,6 +390,152 @@ components:
         createdAt:
           type: string
           format: date-time
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
+  responses:
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+    NotUniqueError:
+      description: Entity data is not unique
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_UNIQUE
+                  fields:
+                    type: object
+    ExpiredError:
+      description: Entity has expired state
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: EXPIRED
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
   securitySchemes:
     Authorization:
       type: apiKey

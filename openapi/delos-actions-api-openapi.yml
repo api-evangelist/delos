@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: actions
+- name: Actions
 paths:
   /actions/{actionId}:
     post:
       summary: 'Action: Submit'
       operationId: actionSubmit
       tags:
-      - actions
+      - Actions
       parameters:
       - name: actionId
         in: path
@@ -58,7 +58,7 @@ paths:
       summary: 'Action: Show'
       operationId: actionShow
       tags:
-      - actions
+      - Actions
       parameters:
       - name: actionId
         in: path

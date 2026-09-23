@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: installations
+- name: Installations
 paths:
   /installations:
     get:
       summary: 'Installation: List'
       operationId: installationsList
       tags:
-      - installations
+      - Installations
       parameters:
       - $ref: '#/components/parameters/limit'
       - $ref: '#/components/parameters/offset'
@@ -58,12 +58,6 @@ paths:
                       $ref: '#/components/schemas/Installation'
 components:
   parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
     limit:
       name: limit
       in: query
@@ -79,52 +73,13 @@ components:
         - ASC
         - DESC
         example: DESC
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   schemas:
-    Installation:
-      type: object
-      required:
-      - id
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        macAddress:
-          type: string
-        ipAddress:
-          type: string
-          format: ipv4
-        ssid:
-          type: string
-        connected:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        tags:
-          type: array
-          items:
-            type: string
-        localAccounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocalAccount'
-        translators:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              name:
-                type: string
     LocalAccount:
       type: object
       required:
@@ -173,6 +128,51 @@ components:
         updatedAt:
           type: string
           format: date-time
+    Installation:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+          format: ipv4
+        ssid:
+          type: string
+        connected:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        localAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalAccount'
+        translators:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
   securitySchemes:
     Authorization:
       type: apiKey

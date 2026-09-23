@@ -1,0 +1,42 @@
+{
+  "provider": "delos",
+  "sources": [
+    "_original/delos-wellcube-cloud-be-openapi-original.json"
+  ],
+  "outputs": [
+    "delos-actions-api-openapi.yml",
+    "delos-admin-installations-api-openapi.yml",
+    "delos-admin-products-api-openapi.yml",
+    "delos-admin-products-bundles-api-openapi.yml",
+    "delos-admin-users-api-openapi.yml",
+    "delos-global-api-openapi.yml",
+    "delos-installations-api-openapi.yml",
+    "delos-local-accounts-api-openapi.yml",
+    "delos-products-api-openapi.yml",
+    "delos-sessions-api-openapi.yml",
+    "delos-users-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "delos-wellcube-cloud-be-openapi-original.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/delos-wellcube-cloud-be-openapi.yml: archived document superseded by a larger archived document",
+    "delos-actions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-admin-installations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-admin-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-admin-products-bundles-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-admin-users-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-global-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-installations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-local-accounts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-products-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-sessions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "delos-users-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

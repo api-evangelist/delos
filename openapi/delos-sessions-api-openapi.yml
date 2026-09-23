@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: sessions
+- name: Sessions
 paths:
   /sessions:
     post:
       summary: 'Session: Create'
       operationId: sessionCreate
       tags:
-      - sessions
+      - Sessions
       requestBody:
         content:
           application/json:
@@ -113,7 +113,7 @@ paths:
       summary: Validate auth token
       operationId: sessionValidate
       tags:
-      - sessions
+      - Sessions
       responses:
         default:
           description: Token valid
@@ -147,7 +147,7 @@ paths:
       summary: 'Session: Create Limited'
       operationId: limitedSessionCreate
       tags:
-      - sessions
+      - Sessions
       requestBody:
         content:
           application/json:
@@ -236,7 +236,7 @@ paths:
       summary: 'Session: Refresh Limited'
       operationId: limitedSessionRefresh
       tags:
-      - sessions
+      - Sessions
       requestBody:
         content:
           application/json:
@@ -332,34 +332,6 @@ components:
                       token:
                         type: string
                         example: USER_NOT_ACTIVE
-    UserNotValidTokenError:
-      description: User coded in token is not valid
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: WRONG_TOKEN
-                  fields:
-                    type: object
-                    properties:
-                      token:
-                        type: string
-                        example: USER_NOT_VALID
     WrongTokenError:
       description: Wrong token
       content:
@@ -388,6 +360,34 @@ components:
                       token:
                         type: string
                         example: WRONG_TOKEN
+    UserNotValidTokenError:
+      description: User coded in token is not valid
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: USER_NOT_VALID
   schemas:
     AccessData:
       type: object

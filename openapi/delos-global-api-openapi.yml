@@ -9,14 +9,14 @@ servers:
 security:
 - Authorization: []
 tags:
-- name: global
+- name: Global
 paths:
   /global/execute-nva:
     post:
       summary: 'Global: ExecuteNVA'
       operationId: globalExecuteNVA
       tags:
-      - global
+      - Global
       requestBody:
         content:
           application/json:
@@ -62,7 +62,7 @@ paths:
       summary: 'Global: Jobs Show'
       operationId: globalJobsShow
       tags:
-      - global
+      - Global
       parameters:
       - name: jobId
         in: path
@@ -97,7 +97,7 @@ paths:
       summary: 'Global: Jobs Get Results'
       operationId: globalJobsGetResults
       tags:
-      - global
+      - Global
       parameters:
       - name: jobId
         in: path
@@ -162,6 +162,19 @@ paths:
         x-action-not-allowed:
           $ref: '#/components/responses/ActionNotAllowedError'
 components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   responses:
     NotExistsError:
       description: Entity not exists
@@ -185,6 +198,30 @@ components:
                   code:
                     type: string
                     example: NOT_EXISTS
+                  fields:
+                    type: object
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
                   fields:
                     type: object
     NotFoundError:
@@ -245,43 +282,6 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
-    ActionNotAllowedError:
-      description: Action not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
-  parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
   securitySchemes:
     Authorization:
       type: apiKey
