@@ -88,30 +88,6 @@ paths:
         $ref: '#/components/responses/ExpiredError'
 components:
   responses:
-    ExpiredError:
-      description: Entity has expired state
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: EXPIRED
-                  fields:
-                    type: object
     NotExistsError:
       description: Entity not exists
       content:
@@ -134,6 +110,30 @@ components:
                   code:
                     type: string
                     example: NOT_EXISTS
+                  fields:
+                    type: object
+    ExpiredError:
+      description: Entity has expired state
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: EXPIRED
                   fields:
                     type: object
   schemas:

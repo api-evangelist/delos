@@ -150,28 +150,6 @@ paths:
           summary: Show Installation Stats with non-admin permissions
           $ref: '#/components/responses/PermissionDeniedError'
 components:
-  parameters:
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
   responses:
     WrongIdError:
       description: wrong-id
@@ -329,6 +307,28 @@ components:
                 format: uuid
               name:
                 type: string
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
   securitySchemes:
     Authorization:
       type: apiKey

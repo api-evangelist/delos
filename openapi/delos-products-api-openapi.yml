@@ -51,29 +51,46 @@ paths:
                     items:
                       $ref: '#/components/schemas/Product'
 components:
-  parameters:
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
   schemas:
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
     InstallationToProduct:
       type: object
       required:
@@ -131,45 +148,28 @@ components:
         updatedAt:
           type: string
           format: date-time
-    Product:
-      type: object
-      required:
-      - id
-      - name
-      - isOpenRegistration
-      - canAssociateInstallation
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        details:
-          type: string
-        resources:
-          type: string
-        isOpenRegistration:
-          type: boolean
-          example: false
-        canAssociateInstallation:
-          type: boolean
-          example: false
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        bundles:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductBundle'
-        installationsToProduct:
-          type: array
-          items:
-            $ref: '#/components/schemas/InstallationToProduct'
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
   securitySchemes:
     Authorization:
       type: apiKey

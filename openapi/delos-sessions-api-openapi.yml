@@ -304,62 +304,6 @@ paths:
                         refreshToken: EXPIRED
 components:
   responses:
-    UserNotActiveTokenError:
-      description: User coded in token is not active
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: WRONG_TOKEN
-                  fields:
-                    type: object
-                    properties:
-                      token:
-                        type: string
-                        example: USER_NOT_ACTIVE
-    WrongTokenError:
-      description: Wrong token
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: WRONG_TOKEN
-                  fields:
-                    type: object
-                    properties:
-                      token:
-                        type: string
-                        example: WRONG_TOKEN
     UserNotValidTokenError:
       description: User coded in token is not valid
       content:
@@ -388,6 +332,62 @@ components:
                       token:
                         type: string
                         example: USER_NOT_VALID
+    WrongTokenError:
+      description: Wrong token
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: WRONG_TOKEN
+    UserNotActiveTokenError:
+      description: User coded in token is not active
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_TOKEN
+                  fields:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: USER_NOT_ACTIVE
   schemas:
     AccessData:
       type: object

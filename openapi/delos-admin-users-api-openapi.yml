@@ -288,74 +288,114 @@ paths:
           summary: Delete user-to-product association with non-admin permissions
           $ref: '#/components/responses/PermissionDeniedError'
 components:
+  responses:
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+    AuthFailedError:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: AUTHENTICATION_FAILED
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
   schemas:
-    InstallationToProduct:
-      type: object
-      required:
-      - id
-      - productId
-      - installationId
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        installationId:
-          type: string
-          format: uuid
-        defaultGroup:
-          type: string
-          example: guests
-        defaultAction:
-          type: string
-          example: NOTIFY_BETA
-        productName:
-          type: string
-        installationName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    AccessData:
-      type: object
-      required:
-      - accessToken
-      - refreshToken
-      properties:
-        accessToken:
-          type: string
-        refreshToken:
-          type: string
-    ProductBundle:
-      type: object
-      required:
-      - id
-      - productId
-      - bundleName
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        bundleName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
     Product:
       type: object
       required:
@@ -395,113 +435,73 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstallationToProduct'
-  responses:
-    AuthFailedError:
-      description: Authentication failed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: AUTHENTICATION_FAILED
-                  fields:
-                    type: object
-    NotExistsError:
-      description: Entity not exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_EXISTS
-                  fields:
-                    type: object
-    ActionNotAllowedError:
-      description: Action not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
-    PermissionDeniedError:
-      description: permission-denied
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: PERMISSION_DENIED
-                  message:
-                    type: string
-                    example: Permission denied
-                  fields:
-                    type: object
-                    properties:
-                      userRole:
-                        type: string
-                        enum:
-                        - USER
-                        - GLOBAL_ROUTER_ADMIN
-                        example: USER
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    AccessData:
+      type: object
+      required:
+      - accessToken
+      - refreshToken
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
   securitySchemes:
     Authorization:
       type: apiKey
