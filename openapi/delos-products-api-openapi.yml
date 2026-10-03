@@ -52,6 +52,29 @@ paths:
                       $ref: '#/components/schemas/Product'
 components:
   schemas:
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Product:
       type: object
       required:
@@ -125,42 +148,19 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ProductBundle:
-      type: object
-      required:
-      - id
-      - productId
-      - bundleName
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        bundleName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
   parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
     limit:
       name: limit
       in: query
       schema:
         type: integer
         example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
     order:
       name: order
       in: query

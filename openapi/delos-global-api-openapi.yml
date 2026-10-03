@@ -162,9 +162,22 @@ paths:
         x-action-not-allowed:
           $ref: '#/components/responses/ActionNotAllowedError'
 components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   responses:
-    ActionNotAllowedError:
-      description: Action not allowed
+    NotFoundError:
+      description: Not found
       content:
         application/json:
           schema:
@@ -184,7 +197,7 @@ components:
                 properties:
                   code:
                     type: string
-                    example: ACTION_NOT_ALLOWED
+                    example: NOT_FOUND
                   fields:
                     type: object
     PermissionDeniedError:
@@ -221,8 +234,8 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
-    NotFoundError:
-      description: Not found
+    ActionNotAllowedError:
+      description: Action not allowed
       content:
         application/json:
           schema:
@@ -242,7 +255,7 @@ components:
                 properties:
                   code:
                     type: string
-                    example: NOT_FOUND
+                    example: ACTION_NOT_ALLOWED
                   fields:
                     type: object
     NotExistsError:
@@ -269,19 +282,6 @@ components:
                     example: NOT_EXISTS
                   fields:
                     type: object
-  parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
   securitySchemes:
     Authorization:
       type: apiKey

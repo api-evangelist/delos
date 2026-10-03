@@ -58,6 +58,51 @@ paths:
                       $ref: '#/components/schemas/Installation'
 components:
   schemas:
+    Installation:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+          format: ipv4
+        ssid:
+          type: string
+        connected:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        localAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalAccount'
+        translators:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
     LocalAccount:
       type: object
       required:
@@ -106,64 +151,19 @@ components:
         updatedAt:
           type: string
           format: date-time
-    Installation:
-      type: object
-      required:
-      - id
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        macAddress:
-          type: string
-        ipAddress:
-          type: string
-          format: ipv4
-        ssid:
-          type: string
-        connected:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        tags:
-          type: array
-          items:
-            type: string
-        localAccounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocalAccount'
-        translators:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              name:
-                type: string
   parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
     limit:
       name: limit
       in: query
       schema:
         type: integer
         example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
     order:
       name: order
       in: query

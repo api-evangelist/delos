@@ -389,8 +389,8 @@ paths:
           $ref: '#/components/responses/PermissionDeniedError'
 components:
   responses:
-    ActionNotAllowedError:
-      description: Action not allowed
+    InstallationWrongCredentialsError:
+      description: Wrong credentials
       content:
         application/json:
           schema:
@@ -410,7 +410,31 @@ components:
                 properties:
                   code:
                     type: string
-                    example: ACTION_NOT_ALLOWED
+                    example: INSTALLATION_WRONG_CREDENTIALS
+                  fields:
+                    type: object
+    AlreadyExistsError:
+      description: Entity already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_EXISTS
                   fields:
                     type: object
     InstallationNvaError:
@@ -471,8 +495,8 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
-    InstallationWrongCredentialsError:
-      description: Wrong credentials
+    ActionNotAllowedError:
+      description: Action not allowed
       content:
         application/json:
           schema:
@@ -492,7 +516,7 @@ components:
                 properties:
                   code:
                     type: string
-                    example: INSTALLATION_WRONG_CREDENTIALS
+                    example: ACTION_NOT_ALLOWED
                   fields:
                     type: object
     NotExistsError:
@@ -517,30 +541,6 @@ components:
                   code:
                     type: string
                     example: NOT_EXISTS
-                  fields:
-                    type: object
-    AlreadyExistsError:
-      description: Entity already exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ALREADY_EXISTS
                   fields:
                     type: object
   schemas:

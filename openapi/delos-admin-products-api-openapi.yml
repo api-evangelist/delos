@@ -336,70 +336,30 @@ paths:
           summary: Delete Product with non-admin permissions
           $ref: '#/components/responses/PermissionDeniedError'
 components:
-  responses:
-    WrongIdError:
-      description: wrong-id
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: WRONG_ID
-                  fields:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        example: WRONG_ID
-    PermissionDeniedError:
-      description: permission-denied
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: PERMISSION_DENIED
-                  message:
-                    type: string
-                    example: Permission denied
-                  fields:
-                    type: object
-                    properties:
-                      userRole:
-                        type: string
-                        enum:
-                        - USER
-                        - GLOBAL_ROUTER_ADMIN
-                        example: USER
   schemas:
+    ProductBundle:
+      type: object
+      required:
+      - id
+      - productId
+      - bundleName
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        bundleName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     Product:
       type: object
       required:
@@ -473,42 +433,82 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ProductBundle:
-      type: object
-      required:
-      - id
-      - productId
-      - bundleName
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        bundleName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
+  responses:
+    WrongIdError:
+      description: wrong-id
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_ID
+                  fields:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: WRONG_ID
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
   parameters:
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
     limit:
       name: limit
       in: query
       schema:
         type: integer
         example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
     order:
       name: order
       in: query
