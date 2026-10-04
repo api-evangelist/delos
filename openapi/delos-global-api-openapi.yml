@@ -176,6 +176,54 @@ components:
         type: integer
         example: 0
   responses:
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
+                  fields:
+                    type: object
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
     NotFoundError:
       description: Not found
       content:
@@ -234,54 +282,6 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
-    ActionNotAllowedError:
-      description: Action not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
-    NotExistsError:
-      description: Entity not exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_EXISTS
-                  fields:
-                    type: object
   securitySchemes:
     Authorization:
       type: apiKey

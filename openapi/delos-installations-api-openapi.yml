@@ -57,52 +57,29 @@ paths:
                     items:
                       $ref: '#/components/schemas/Installation'
 components:
+  parameters:
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   schemas:
-    Installation:
-      type: object
-      required:
-      - id
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        macAddress:
-          type: string
-        ipAddress:
-          type: string
-          format: ipv4
-        ssid:
-          type: string
-        connected:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        tags:
-          type: array
-          items:
-            type: string
-        localAccounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/LocalAccount'
-        translators:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                format: uuid
-              name:
-                type: string
     LocalAccount:
       type: object
       required:
@@ -151,28 +128,51 @@ components:
         updatedAt:
           type: string
           format: date-time
-  parameters:
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
+    Installation:
+      type: object
+      required:
+      - id
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        macAddress:
+          type: string
+        ipAddress:
+          type: string
+          format: ipv4
+        ssid:
+          type: string
+        connected:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+        localAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/LocalAccount'
+        translators:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
   securitySchemes:
     Authorization:
       type: apiKey

@@ -51,7 +51,63 @@ paths:
                     items:
                       $ref: '#/components/schemas/Product'
 components:
+  parameters:
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   schemas:
+    InstallationToProduct:
+      type: object
+      required:
+      - id
+      - productId
+      - installationId
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        installationId:
+          type: string
+          format: uuid
+        defaultGroup:
+          type: string
+          example: guests
+        defaultAction:
+          type: string
+          example: NOTIFY_BETA
+        productName:
+          type: string
+        installationName:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     ProductBundle:
       type: object
       required:
@@ -114,62 +170,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InstallationToProduct'
-    InstallationToProduct:
-      type: object
-      required:
-      - id
-      - productId
-      - installationId
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        installationId:
-          type: string
-          format: uuid
-        defaultGroup:
-          type: string
-          example: guests
-        defaultAction:
-          type: string
-          example: NOTIFY_BETA
-        productName:
-          type: string
-        installationName:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-  parameters:
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
   securitySchemes:
     Authorization:
       type: apiKey

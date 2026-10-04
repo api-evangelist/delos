@@ -150,6 +150,28 @@ paths:
           summary: Show Installation Stats with non-admin permissions
           $ref: '#/components/responses/PermissionDeniedError'
 components:
+  parameters:
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
   schemas:
     LocalAccount:
       type: object
@@ -307,28 +329,6 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
-  parameters:
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
   securitySchemes:
     Authorization:
       type: apiKey

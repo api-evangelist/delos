@@ -413,88 +413,6 @@ components:
                     example: INSTALLATION_WRONG_CREDENTIALS
                   fields:
                     type: object
-    AlreadyExistsError:
-      description: Entity already exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ALREADY_EXISTS
-                  fields:
-                    type: object
-    InstallationNvaError:
-      description: Error occurred in Installation after sending nva
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: INSTALLATION_NVA_ERROR
-                  fields:
-                    type: object
-    PermissionDeniedError:
-      description: permission-denied
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: PERMISSION_DENIED
-                  message:
-                    type: string
-                    example: Permission denied
-                  fields:
-                    type: object
-                    properties:
-                      userRole:
-                        type: string
-                        enum:
-                        - USER
-                        - GLOBAL_ROUTER_ADMIN
-                        example: USER
     ActionNotAllowedError:
       description: Action not allowed
       content:
@@ -543,6 +461,88 @@ components:
                     example: NOT_EXISTS
                   fields:
                     type: object
+    InstallationNvaError:
+      description: Error occurred in Installation after sending nva
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_NVA_ERROR
+                  fields:
+                    type: object
+    AlreadyExistsError:
+      description: Entity already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ALREADY_EXISTS
+                  fields:
+                    type: object
+    PermissionDeniedError:
+      description: permission-denied
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: PERMISSION_DENIED
+                  message:
+                    type: string
+                    example: Permission denied
+                  fields:
+                    type: object
+                    properties:
+                      userRole:
+                        type: string
+                        enum:
+                        - USER
+                        - GLOBAL_ROUTER_ADMIN
+                        example: USER
   schemas:
     LocalAccount:
       type: object
