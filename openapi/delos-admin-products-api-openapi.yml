@@ -336,29 +336,46 @@ paths:
           summary: Delete Product with non-admin permissions
           $ref: '#/components/responses/PermissionDeniedError'
 components:
-  parameters:
-    order:
-      name: order
-      in: query
-      schema:
-        type: string
-        enum:
-        - ASC
-        - DESC
-        example: DESC
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
   schemas:
+    Product:
+      type: object
+      required:
+      - id
+      - name
+      - isOpenRegistration
+      - canAssociateInstallation
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        details:
+          type: string
+        resources:
+          type: string
+        isOpenRegistration:
+          type: boolean
+          example: false
+        canAssociateInstallation:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        bundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductBundle'
+        installationsToProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationToProduct'
     InstallationToProduct:
       type: object
       required:
@@ -416,74 +433,29 @@ components:
         updatedAt:
           type: string
           format: date-time
-    Product:
-      type: object
-      required:
-      - id
-      - name
-      - isOpenRegistration
-      - canAssociateInstallation
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        name:
-          type: string
-        details:
-          type: string
-        resources:
-          type: string
-        isOpenRegistration:
-          type: boolean
-          example: false
-        canAssociateInstallation:
-          type: boolean
-          example: false
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        bundles:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductBundle'
-        installationsToProduct:
-          type: array
-          items:
-            $ref: '#/components/schemas/InstallationToProduct'
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
+    order:
+      name: order
+      in: query
+      schema:
+        type: string
+        enum:
+        - ASC
+        - DESC
+        example: DESC
   responses:
-    WrongIdError:
-      description: wrong-id
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: WRONG_ID
-                  fields:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                        example: WRONG_ID
     PermissionDeniedError:
       description: permission-denied
       content:
@@ -518,6 +490,34 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
+    WrongIdError:
+      description: wrong-id
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: WRONG_ID
+                  fields:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: WRONG_ID
   securitySchemes:
     Authorization:
       type: apiKey

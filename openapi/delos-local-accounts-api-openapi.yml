@@ -389,8 +389,8 @@ paths:
           $ref: '#/components/responses/PermissionDeniedError'
 components:
   responses:
-    InstallationWrongCredentialsError:
-      description: Wrong credentials
+    AlreadyExistsError:
+      description: Entity already exists
       content:
         application/json:
           schema:
@@ -410,7 +410,7 @@ components:
                 properties:
                   code:
                     type: string
-                    example: INSTALLATION_WRONG_CREDENTIALS
+                    example: ALREADY_EXISTS
                   fields:
                     type: object
     ActionNotAllowedError:
@@ -435,78 +435,6 @@ components:
                   code:
                     type: string
                     example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
-    NotExistsError:
-      description: Entity not exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_EXISTS
-                  fields:
-                    type: object
-    InstallationNvaError:
-      description: Error occurred in Installation after sending nva
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: INSTALLATION_NVA_ERROR
-                  fields:
-                    type: object
-    AlreadyExistsError:
-      description: Entity already exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ALREADY_EXISTS
                   fields:
                     type: object
     PermissionDeniedError:
@@ -543,6 +471,78 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
+    InstallationNvaError:
+      description: Error occurred in Installation after sending nva
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_NVA_ERROR
+                  fields:
+                    type: object
+    InstallationWrongCredentialsError:
+      description: Wrong credentials
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: INSTALLATION_WRONG_CREDENTIALS
+                  fields:
+                    type: object
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
   schemas:
     LocalAccount:
       type: object

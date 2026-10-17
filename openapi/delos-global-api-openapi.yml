@@ -162,68 +162,7 @@ paths:
         x-action-not-allowed:
           $ref: '#/components/responses/ActionNotAllowedError'
 components:
-  parameters:
-    limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        example: 20
-    offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        example: 0
   responses:
-    ActionNotAllowedError:
-      description: Action not allowed
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: ACTION_NOT_ALLOWED
-                  fields:
-                    type: object
-    NotExistsError:
-      description: Entity not exists
-      content:
-        application/json:
-          schema:
-            type: object
-            required:
-            - status
-            - error
-            properties:
-              status:
-                type: integer
-                example: 0
-              error:
-                type: object
-                required:
-                - code
-                - fields
-                properties:
-                  code:
-                    type: string
-                    example: NOT_EXISTS
-                  fields:
-                    type: object
     NotFoundError:
       description: Not found
       content:
@@ -246,6 +185,30 @@ components:
                   code:
                     type: string
                     example: NOT_FOUND
+                  fields:
+                    type: object
+    ActionNotAllowedError:
+      description: Action not allowed
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: ACTION_NOT_ALLOWED
                   fields:
                     type: object
     PermissionDeniedError:
@@ -282,6 +245,43 @@ components:
                         - USER
                         - GLOBAL_ROUTER_ADMIN
                         example: USER
+    NotExistsError:
+      description: Entity not exists
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - status
+            - error
+            properties:
+              status:
+                type: integer
+                example: 0
+              error:
+                type: object
+                required:
+                - code
+                - fields
+                properties:
+                  code:
+                    type: string
+                    example: NOT_EXISTS
+                  fields:
+                    type: object
+  parameters:
+    offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        example: 0
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        example: 20
   securitySchemes:
     Authorization:
       type: apiKey
