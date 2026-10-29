@@ -64,41 +64,143 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Delos Living LLC is a New York-based wellness real estate and technology company. It founded the WELL
-Building Standard and co-founded the Well Living Lab with Mayo Clinic, and its connected product line —
-WellCube — pairs localized air purifiers with multi-sensor devices for commercial offices.
+Delos Living LLC is a New York-based wellness real estate and technology company that applies building science and evidence-based research to indoor environments across commercial, residential, hospitality, education, senior living and transportation. Delos is the founder of the WELL Building Standard (now administered by the International WELL Building Institute) and co-founder of the Well Living Lab with Mayo Clinic. Its product line spans Intellipure advanced air purification, indoor environmental quality (IEQ) sensing, the Stay Well hospitality program, and WellCube — a connected system of localized air purifiers and multi-sensor devices for the modern office, backed by the "Cloud BE" / Darwin Cloud platform that handles installations, products, device actions and account federation.
 
-## The API surface
+**Areas:** wellness-real-estate · Indoor Air Quality · indoor-environmental-quality · IoT · Smart Buildings · Building Automation · Air Purification · environmental-sensors · Commercial Real Estate · healthy-buildings · Hospitality · ESG
 
-Delos does not advertise a developer program, and there is no `/developers` or `/api` page on either
-`delos.com` or `wellcube.io`. A real, publicly readable **OpenAPI 3.0.0 contract** does exist:
+## Delos on APIs.io
 
-- **WellCube Cloud BE API** — <https://cloud.wellcube.io/api/v1> — 33 paths, 39 operations, served
-  through a live Swagger UI at <https://cloud.wellcube.io/api/v1/docs/>.
+Everything profiled for Delos is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/delos/](https://apis.io/providers/delos/)** — or go straight to one of the APIs or properties below.
 
-It was found by reading <https://app.wellcube.io/config.js>, the WellCube web application's public
-runtime configuration, which names the backend host. Nothing here required credentials.
+### APIs (11)
 
-Three properties of that contract are worth stating up front, because they change how it must be
-consumed and all three were verified rather than assumed:
+- [Delos Actions API](https://apis.io/apis/delos/delos-actions-api/) — The actions API from Delos — 1 operation(s) for actions.
+- [Delos Admin/installations API](https://apis.io/apis/delos/delos-admin-installations-api/) — The admin/installations API from Delos — 3 operation(s) for admin/installations.
+- [Delos Admin/products API](https://apis.io/apis/delos/delos-admin-products-api/) — The admin/products API from Delos — 3 operation(s) for admin/products.
+- [Delos Admin/products Bundles API](https://apis.io/apis/delos/delos-admin-products-bundles-api/) — The admin/products-bundles API from Delos — 1 operation(s) for admin/products-bundles.
+- [Delos Admin/users API](https://apis.io/apis/delos/delos-admin-users-api/) — The admin/users API from Delos — 4 operation(s) for admin/users.
+- [Delos Global API](https://apis.io/apis/delos/delos-global-api/) — The global API from Delos — 3 operation(s) for global.
+- [Delos Installations API](https://apis.io/apis/delos/delos-installations-api/) — The installations API from Delos — 1 operation(s) for installations.
+- [Delos Local Accounts API](https://apis.io/apis/delos/delos-local-accounts-api/) — The local-accounts API from Delos — 6 operation(s) for local-accounts.
+- [Delos Products API](https://apis.io/apis/delos/delos-products-api/) — The products API from Delos — 1 operation(s) for products.
+- [Delos Sessions API](https://apis.io/apis/delos/delos-sessions-api/) — The sessions API from Delos — 4 operation(s) for sessions.
+- [Delos Users API](https://apis.io/apis/delos/delos-users-api/) — The users API from Delos — 6 operation(s) for users.
 
-1. **Every response is HTTP 200, including failures** — confirmed live on 2026-08-12. `body.status`
-   (`1` success / `0` failure) is the only outcome signal the API emits.
-2. **The document declares no HTTP status codes at all.** All 19 failure responses use non-standard
-   `x-`-prefixed response-map keys, which OpenAPI 3.0 does not permit. The usable error identity is
-   one level down, in 14 reusable components with pinned `error.code` strings.
-3. **There is no idempotency key**, on any of the 18 write operations, and no rate-limit headers are
-   returned.
+### Published properties
 
-Delos publishes no client SDK, no changelog, no status page, no pricing, no `/.well-known/` document
-and no event contract — though a live WebSocket gateway (`wss://ugw.wellcube.io/clients-socket`) is
-running behind the product. Each of those absences is recorded with its probe evidence in the
-corresponding artifact directory.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-### Links
+#### AsyncAPI (1)
 
-- <https://delos.com/> — company
-- <https://wellcube.io/> — WellCube product
-- <https://cloud.wellcube.io/api/v1/docs/> — the entire developer surface
-- <https://github.com/Delos-tech> — GitHub organization ("Delos Living")
-- <https://www.hiive.com/securities/delos-stock> — secondary-market listing that surfaced this company
+Event-driven and webhook contracts.
+
+- [Delos Events](https://apis.io/asyncapis/delos/delos-events/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [delos-wellcube](https://apis.io/servers/delos/delos-wellcube/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Delos Agentic Access](https://apis.io/agentic-access/delos/delos-agentic-access/)
+
+#### Collections (1)
+
+Postman and Open Collection request collections.
+
+- [Cloud BE](https://apis.io/collections/delos/open-delos-wellcube-cloud-be/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Delos Wellcube Cloud Be Overlay](https://apis.io/overlays/delos/delos-wellcube-cloud-be-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Delos Authentication](https://apis.io/security/delos/delos-authentication/)
+- [Delos Domain Security](https://apis.io/security/delos/delos-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Delos Plans Pricing](https://apis.io/plans/delos/delos-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Delos Rate Limits](https://apis.io/rate-limits/delos/delos-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://delos.com/)
+- [Documentation](https://cloud.wellcube.io/api/v1/docs/)
+- [API reference](https://cloud.wellcube.io/api/v1/docs/)
+- [Support](https://support.wellcube.io/hc/en-us)
+- [Blog](https://delos.com/blog/)
+- [Terms of service](https://wellcube.io/terms-of-use)
+- [Privacy policy](https://wellcube.io/privacy-policy)
+- [GitHub](https://github.com/Delos-tech)
+
+## API Evangelist rating
+
+**Kin Score 33.6** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 66.1 |
+| Contract quality | 49.5 |
+| Contract governance | 4.5 |
+| Operational transparency | 2.6 |
+| Developer ergonomics | 37.5 |
+| Access clarity | 27.6 |
+
+**Agent readiness 30.8** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/delos/](https://apis.io/providers/delos/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Delos: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/delos/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
